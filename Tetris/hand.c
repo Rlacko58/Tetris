@@ -1,8 +1,11 @@
-#include "hand.h"
+﻿#include "hand.h"
 
+//Lefoglalja a tetris mátrixát
 bool* HandFoglal(int const *size) {
 	return (bool*)malloc((*size)*(*size) * sizeof(bool));
 }
+
+//Lenullázza a kézben lévő tetrist (Előtte h->size-ot meg kell adni)
 void HandNullaz(Hand* h) {
 	h->x = 0; h->y = 0; h->color = 0;
 	h->e = HandFoglal(&h->size);

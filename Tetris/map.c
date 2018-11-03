@@ -6,6 +6,7 @@ Map* MapFoglal(int const *sor, int const *oszlop) {
 	return (Map*)malloc((*sor) * (*oszlop) * sizeof(Map));
 }
 
+//A pálya teljes lenullázása
 Map* MapNullaz(Map* tomb, int const *sor, int const *oszlop) {
 	for (int i = 0; i < *sor; i++)
 		for (int j = 0; j < *oszlop; j++) {
@@ -15,6 +16,7 @@ Map* MapNullaz(Map* tomb, int const *sor, int const *oszlop) {
 	return tomb;
 }
 
+//Tetris átmásolása a pályára
 Map* MapbaMasol(Map* tomb, int const *oszlop, Hand* const h) {
 	for (int i = 0; i < h->size; i++)
 		for (int j = 0; j < h->size; j++) {

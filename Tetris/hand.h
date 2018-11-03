@@ -1,20 +1,24 @@
-#ifndef HAND_H
+﻿#ifndef HAND_H
 #define HAND_H
 
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 
+//Mátrixszerű pointer elérés egyszerűsítése
 #define IND(x,y,oszlop) ((x) * oszlop + (y))
 
+//A kézben lévő tetris struktúrája
 typedef struct {
-	int x, y;	//Pozicioja a Maphez k�pest
+	int x, y;	//Pozicioja a Maphez képest
 	int color;	//Szine
-	int size;	//M�trix m�rete
+	int size;	//Mátrix mérete
 	bool* e;	//Tartalma
 } Hand;
 
+//Lefoglalja a tetris mátrixát
 bool* HandFoglal(int const *size);
+//Lenullázza a kézben lévő tetrist (Előtte h->size-ot meg kell adni)
 void HandNullaz(Hand* h);
 
 #endif
