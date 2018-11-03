@@ -4,30 +4,42 @@
 
 
 //Memoria terulet lefoglalasa a pályának
-Map* MapFoglal(int const *sor, int const *oszlop) {
-	return (Map*)malloc((*sor) * (*oszlop) * sizeof(Map));
+PalyaMatrix* MatrixFoglal(Palya const *vp) {
+	return (PalyaMatrix*)malloc((vp->sor) * (vp->oszlop) * sizeof(PalyaMatrix));
 }
 
 //A pálya teljes lenullázása
-Map* MapNullaz(Map* tomb, int const *sor, int const *oszlop) {
-	for (int i = 0; i < *sor; i++)
-		for (int j = 0; j < *oszlop; j++) {
-			tomb[IND(i, j, *oszlop)].e = 0;
-			tomb[IND(i, j, *oszlop)].c = 0;
+void MatrixInit(Palya *vp, int const sor, int const oszlop) {
+	vp->sor = sor; vp->oszlop = oszlop;
+	vp->v = MatrixFoglal(vp);
+	vp->sum = (int*)malloc(vp->sor * sizeof(int));
+	for (int i = 0; i < vp->sor; i++) {
+		vp->sum[i] = 0;
+		for (int j = 0; j < vp->oszlop; j++) {
+			vp->v[IND(i, j, vp->oszlop)].e = 0;
+			vp->v[IND(i, j, vp->oszlop)].c = 0;
 		}
-	return tomb;
+	}
 }
 
 //Tetris átmásolása a pályára
-Map* MapbaMasol(Map* tomb, int const *oszlop, Hand* const h) {
-	for (int i = 0; i < h->size; i++)
-		for (int j = 0; j < h->size; j++) {
-			if (h->e[IND(i, j, h->size)]) {
-				tomb[IND(h->x + i, h->y + j, *oszlop)].e = true;
-				tomb[IND(h->x + i, h->y + j, *oszlop)].c = h->color;
+void MatrixbaMasol(Palya *vp, Hand *hp) {
+	for (int i = 0; i < hp->size; i++)
+		for (int j = 0; j < hp->size; j++)
+			if (hp->v[IND(i, j, hp->size)]) {
+				vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].e = true;
+				vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].c = hp->color;
 			}
-		}
-	
-	return tomb;
 }
 
+bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp) {
+	for (int i = 0; i < hp->size; i++)
+		for (int j = 0; j < hp->size; j++)
+			if (bp[IND(i, j, hp->size)]) {
+				if (j + hp->y >= vp->oszlop)
+					return true;
+				if (vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].e)
+					return true;
+			}
+	return false;
+}

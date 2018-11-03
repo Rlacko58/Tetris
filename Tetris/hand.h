@@ -13,14 +13,14 @@ typedef struct {
 	int x, y;	//Pozicioja a Maphez képest
 	int color;	//Szine
 	int size;	//Mátrix mérete
-	bool* e;	//Tartalma
+	bool* v;	//Tartalma
 } Hand;
 
 //Lefoglalja a tetris mátrixát
-bool* HandFoglal(int const *size);
+bool* HandFoglal(Hand const *hp);
 //Lenullázza a kézben lévő tetrist (Előtte h->size-ot meg kell adni)
-void HandNullaz(Hand* h);
+void HandInit(Hand* hp, int const size);
 
-bool* Forgat(Hand* h);
+bool* Forgat(Hand const *hp);
 
 #endif

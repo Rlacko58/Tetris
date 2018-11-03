@@ -13,15 +13,23 @@
 typedef struct {
 	bool e; //Cellában van-e bármi?
 	int c; //Mi a szine?
-} Map;
+} PalyaMatrix;
+
+typedef struct {
+	int sor, oszlop;
+	int *sum;
+	PalyaMatrix *v;
+} Palya;
 
 //Memoria terulet lefoglalasa a pályának
-Map* MapFoglal(int const *sor, int const *oszlop);
+PalyaMatrix* MatrixFoglal(Palya const *vp);
 
 //A pálya teljes lenullázása
-Map* MapNullaz(Map* tomb, int const *sor, int const *oszlop);
+void MatrixInit(Palya *vp, int const sor, int const oszlop);
 
 //Tetris átmásolása a pályára
-Map* MapbaMasol(Map* tomb, int const * oszlop, Hand* const h);
+void MatrixbaMasol(Palya *vp, Hand *hp);
+
+bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp);
 
 #endif
