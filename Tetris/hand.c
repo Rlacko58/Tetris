@@ -17,3 +17,13 @@ void HandNullaz(Hand* h) {
 		}
 }
 
+//Elforgatja a kézben lévő tetrist és visszatér annak mátrixával
+bool* Forgat(Hand* h) {
+	bool* sv = HandFoglal(&h->size);
+	for (int i = 0; i < h->size; i++)
+		for (int j = 0; j < h->size; j++) {
+			sv[IND(j, h->size - 1 - i, h->size)] = h->e[IND(i, j, h->size)];
+		}
+	return sv;
+}
+

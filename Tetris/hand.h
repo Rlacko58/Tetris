@@ -21,4 +21,6 @@ bool* HandFoglal(int const *size);
 //Lenullázza a kézben lévő tetrist (Előtte h->size-ot meg kell adni)
 void HandNullaz(Hand* h);
 
+bool* Forgat(Hand* h);
+
 #endif
