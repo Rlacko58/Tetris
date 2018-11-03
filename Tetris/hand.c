@@ -1,5 +1,7 @@
 ﻿#include "hand.h"
 
+#include "debugmalloc.h"
+
 //Lefoglalja a tetris mátrixát
 bool* HandFoglal(int const *size) {
 	return (bool*)malloc((*size)*(*size) * sizeof(bool));

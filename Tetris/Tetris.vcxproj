@@ -87,7 +87,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\rlack\source\repos\Tetris\Tetris\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -147,11 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="debugmalloc.c" />
     <ClCompile Include="hand.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="map.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="debugmalloc.h" />
     <ClInclude Include="hand.h" />
     <ClInclude Include="map.h" />
   </ItemGroup>

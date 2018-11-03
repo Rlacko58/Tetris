@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "debugmalloc.h"
+
 #include "map.h"
 #include "hand.h"
 
@@ -35,9 +37,11 @@ int main()
 			printf("%d ", tomb[IND(i, j, oszlop)].e);
 		printf("\n");
 	}
-	
 
 
+
+	free(tomb);
+	free(h.e);
 
 	return 0;             
 }

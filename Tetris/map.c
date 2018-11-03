@@ -1,5 +1,7 @@
 #include "map.h"
 
+#include "debugmalloc.h"
+
 
 //Memoria terulet lefoglalasa a pályának
 Map* MapFoglal(int const *sor, int const *oszlop) {
