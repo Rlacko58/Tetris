@@ -8,7 +8,7 @@ PalyaMatrix* MatrixFoglal(Palya const *vp) {
 	return (PalyaMatrix*)malloc((vp->sor) * (vp->oszlop) * sizeof(PalyaMatrix));
 }
 
-//A pálya teljes lenullázása
+//A pálya inicializálása
 void MatrixInit(Palya *vp, int const sor, int const oszlop) {
 	vp->sor = sor; vp->oszlop = oszlop;
 	vp->v = MatrixFoglal(vp);
@@ -31,15 +31,12 @@ void MatrixbaMasol(Palya *vp, Hand *hp) {
 				vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].c = hp->color;
 			}
 }
-
+//Ütközés vizsgálat
 bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp) {
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++)
-			if (bp[IND(i, j, hp->size)]) {
-				if (j + hp->y >= vp->oszlop)
-					return true;
+			if (bp[IND(i, j, hp->size)]) 
 				if (vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].e)
 					return true;
-			}
 	return false;
 }

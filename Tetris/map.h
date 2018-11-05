@@ -11,25 +11,26 @@
 
 //Pálya struktúra
 typedef struct {
-	bool e; //Cellában van-e bármi?
-	int c; //Mi a szine?
+	bool e;				//Cellában van-e bármi?
+	int c;				//Mi a szine?
 } PalyaMatrix;
 
 typedef struct {
-	int sor, oszlop;
-	int *sum;
-	PalyaMatrix *v;
+	int sor, oszlop;	//Pálya mérete
+	int *sum;			//Soronkénti összeg
+	PalyaMatrix *v;		//Pálya mátrixa
 } Palya;
 
 //Memoria terulet lefoglalasa a pályának
 PalyaMatrix* MatrixFoglal(Palya const *vp);
 
-//A pálya teljes lenullázása
+//A pálya inicializálása
 void MatrixInit(Palya *vp, int const sor, int const oszlop);
 
 //Tetris átmásolása a pályára
 void MatrixbaMasol(Palya *vp, Hand *hp);
 
+//Ütközés vizsgálat
 bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp);
 
 #endif

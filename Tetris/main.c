@@ -73,7 +73,7 @@ int main()
 	s = Forgat(&h);
 	free(h.v);
 	h.v = s;
-	printf("\nTetris Forgatva megint:\n");
+	printf("\nTetris Forgatva megint 2x:\n");
 	for (int i = 0; i < h.size; i++) {
 		for (int j = 0; j < h.size; j++) {
 			printf("%d ", h.v[IND(i, j, h.size)]);

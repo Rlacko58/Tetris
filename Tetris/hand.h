@@ -18,9 +18,9 @@ typedef struct {
 
 //Lefoglalja a tetris mátrixát
 bool* HandFoglal(Hand const *hp);
-//Lenullázza a kézben lévő tetrist (Előtte h->size-ot meg kell adni)
+//Kézben lévő tetris Inicializáció
 void HandInit(Hand* hp, int const size);
-
+//Elforgatja a kézben lévő tetrist és visszatér annak mátrixával
 bool* Forgat(Hand const *hp);
 
 #endif

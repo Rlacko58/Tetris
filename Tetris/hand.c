@@ -7,7 +7,7 @@ bool* HandFoglal(Hand const *hp) {
 	return (bool*)malloc((hp->size)*(hp->size) * sizeof(bool));
 }
 
-//Lenullázza a kézben lévő tetris Inicializáció
+//Kézben lévő tetris Inicializáció
 void HandInit(Hand* hp, int const size) {
 	hp->x = 0; hp->y = 0; 
 	hp->color = 0; hp->size = size;
