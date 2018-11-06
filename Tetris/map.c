@@ -35,8 +35,11 @@ void MatrixbaMasol(Palya *vp, Hand *hp) {
 bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp) {
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++)
-			if (bp[IND(i, j, hp->size)]) 
-				if (vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].e)
+			if (bp[IND(i, j, hp->size)]) {
+				if (vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].e ||
+					hp->y + j >= vp->oszlop || hp->y + j < 0 ||
+					hp->x <= 0)
 					return true;
+			}
 	return false;
 }
