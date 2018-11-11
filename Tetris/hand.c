@@ -28,7 +28,7 @@ void HandInit(Hand* hp,int const *oszlop, int const melyik) {
 
 	hp->x = 0;
 	hp->color = 0;
-	hp->y = *oszlop / 2 - ceil(hp->size/2);
+	hp->y = (int)*oszlop / 2 - ceil(hp->size/2);
 
 	hp->v = HandFoglal(hp);
 	switch (melyik) {
@@ -51,7 +51,7 @@ bool* Forgat_jobbra(Hand const *hp) {  //Jobbra forgat
 	}
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++) {
-			sv[IND(j, hp->size - 1 - i, hp->size)] = hp->v[IND(i, j, hp->size)];
+			sv[IND(j, hp->size - 1 - i,hp->size)] = hp->v[IND(i, j, hp->size)];
 		}
 	return sv;
 }

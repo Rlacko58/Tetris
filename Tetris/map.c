@@ -50,14 +50,14 @@ bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp) {
 
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása
 void Eltuntet_sor(Palya *vp, int sor) {
-	vp->sum[*sor] = 0;
+	vp->sum[sor] = 0;
 	for (int i = 0; i < vp->oszlop; i++) {
-		for (int j = *sor; j > 0; j--) {
+		for (int j = sor; j > 0; j--) {
 			vp->v[IND(j, i, vp->oszlop)].e = vp->v[IND(j-1, i, vp->oszlop)].e; 
 			vp->v[IND(j - 1, i, vp->oszlop)].e = 0;
 			vp->v[IND(j, i, vp->oszlop)].c = vp->v[IND(j-1, i, vp->oszlop)].c;
 			vp->v[IND(j - 1, i, vp->oszlop)].c = 0;
 		}
-		if (vp->v[IND(i, *sor, vp->oszlop)].e) vp->sum[*sor]++;
+		if (vp->v[IND(i, sor, vp->oszlop)].e) vp->sum[sor]++;
 	}
 }
