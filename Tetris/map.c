@@ -49,7 +49,7 @@ bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp) {
 }
 
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása
-void Eltuntet_sor(Palya *vp, int *sor) {
+void Eltuntet_sor(Palya *vp, int sor) {
 	vp->sum[*sor] = 0;
 	for (int i = 0; i < vp->oszlop; i++) {
 		for (int j = *sor; j > 0; j--) {

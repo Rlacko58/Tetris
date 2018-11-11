@@ -33,6 +33,6 @@ void MatrixbaMasol(Palya *vp, Hand *hp);
 bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp);
 
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása
-void Eltuntet_sor(Palya *vp, int *sor);
+void Eltuntet_sor(Palya *vp, int sor);
 
 #endif

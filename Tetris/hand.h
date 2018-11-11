@@ -10,7 +10,7 @@
 typedef struct {
 	int x, y;	//Pozicioja a Maphez képest
 	int color;	//Szine
-	int size;	//Mátrix mérete
+	int size;	//Mátrix mérete (size*size)
 	bool* v;	//Tartalma
 } Hand;
 
