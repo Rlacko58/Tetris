@@ -3,8 +3,6 @@
 #include "hand.h"
 
 #include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 //Mátrixszerű pointer elérés egyszerűsítése
 #define IND(x,y,oszlop) ((x) * oszlop + (y))
@@ -18,6 +16,7 @@ typedef struct {
 typedef struct {
 	int sor, oszlop;	//Pálya mérete
 	int *sum;			//Soronkénti összeg
+	int level;			//Jelenlegi szint
 	PalyaMatrix *v;		//Pálya mátrixa
 } Palya;
 
@@ -32,5 +31,8 @@ void MatrixbaMasol(Palya *vp, Hand *hp);
 
 //Ütközés vizsgálat
 bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp);
+
+//Adott sor eltüntetése, majd fölötte lévők lejebb húzása
+void Eltuntet_sor(Palya *vp, int *sor);
 
 #endif
