@@ -2,100 +2,58 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+//Megjelenítéshez szükséges includok
+#include "GL/glut.h"
+#include <windows.h>
+
+//Debughoz
 #include "debugmalloc.h"
 
+//Külső fájlok
 #include "map.h"
 #include "hand.h"
+#include "megjelenites.h"
 
+GLfloat angle = 0.0f;
 
-/*
-*/
+/* Handler for window-repaint event. Call back when the window first appears and
+   whenever the window needs to be re-painted. */
+void display() {
+	glClear(GL_COLOR_BUFFER_BIT);   // Clear the color buffer
+	glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
+	glLoadIdentity();               // Reset the model-view matrix
 
-int main()
+	Palyakirajzol();
+
+	glutSwapBuffers();   // Double buffered - swap the front and back buffers
+
+	// Change the rotational angle after each display()
+	angle += 2.0f;
+}
+
+void keyboard(unsigned char key, int x, int y)
 {
-	//Pálya inicializáció
-	Palya t; 
-	MatrixInit(&t, 10, 5); //10 sor, 5 oszlop
-	//Pálya kiíratása konzolra
-	printf("Matrix: \n");
-	for (int i = 0; i < t.sor; i++) {
-		for (int j = 0; j < t.oszlop; j++) {
-			printf("%d ", t.v[IND(i, j, t.oszlop)].e);
-		}
-		printf("\n");
+	switch (key)
+	{
+	case 27: // Escape key -- Fejlesztéshez egy kis tweak
+		glutDestroyWindow(1);
+		return 0;
+		break;
 	}
+	glutPostRedisplay();
+}
 
-	//Hand inicializáció
-	Hand h;
-	HandInit(&h,&t.oszlop, 5); //5-ös számú tetris (Z)
-	//Kiíratás
-	printf("\nTetris: \n");
-	for (int i = 0; i < h.size; i++) {
-		for (int j = 0; j < h.size; j++) {
-			printf("%d ", h.v[IND(i, j, h.size)]);
-		}
-		printf("\n");
-	}
-
-	//Balra elforgatott mátrixról egy másolat
-	bool* s = Forgat_balra(&h);
-	//Annak átmásolása a Hand-be
-	free(h.v);
-	h.v = s;
-	//Kiíratás
-	printf("\nTetris Forgatva balra:\n");
-	for (int i = 0; i < h.size; i++) {
-		for (int j = 0; j < h.size; j++) {
-			printf("%d ", h.v[IND(i, j, h.size)]);
-		}
-		printf("\n");
-	}
-	//Bemásolása a pályára
-	MatrixbaMasol(&t, &h);
-
-	printf("\nMatrix bemasolt tetris-el: \n");
-	for (int i = 0; i < t.sor; i++) {
-		for (int j = 0; j < t.oszlop; j++) {
-			printf("%d ", t.v[IND(i, j, t.oszlop)].e);
-		}
-		printf("\n");
-	}
-
-	//Jobbra forgatás kétszer
-	s = Forgat_jobbra(&h);
-	free(h.v);
-	h.v = s;
-	s = Forgat_jobbra(&h);
-	free(h.v);
-	h.v = s;
-	printf("\nTetris Forgatva 2x jobbra:\n");
-	for (int i = 0; i < h.size; i++) {
-		for (int j = 0; j < h.size; j++) {
-			printf("%d ", h.v[IND(i, j, h.size)]);
-		}
-		printf("\n");
-	}
-	printf("Lenne utkozes bemasolaskor? ");
-	//Vizsgálata, hogy lenne-e ütközés az új tetrissel
-	if (Utkozes(&t, &h, &h.v[0]))
-		printf("Igen");
-	else
-		printf("Nem");
-	printf("\n");
-
-	//Adott sor eltüntetése
-	Eltuntet_sor(&t, 7);
-	printf("\nMatrix 7.sor eltuntetessel: \n");
-	for (int i = 0; i < t.sor; i++) {
-		for (int j = 0; j < t.oszlop; j++) {
-			printf("%d ", t.v[IND(i, j, t.oszlop)].e);
-		}
-		printf("\n");
-	}
-
-	free(t.v);
-	free(t.sum);
-	free(h.v);
-
+int main(int argc, char** argv) {
+	glutInit(&argc, argv);          // Initialize GLUT
+	glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode
+	glutInitWindowSize(700, 700);   // Set the window's initial width & height - non-square
+	glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
+	glutCreateWindow("Animation via Idle Function");  // Create window with the given title
+	glutDisplayFunc(display);       // Register callback handler for window re-paint event
+	glutReshapeFunc(Ujrameretez);       // Register callback handler for window re-size event
+	glutTimerFunc(0, Idozito, 0);     // First timer call immediately
+	glutKeyboardFunc(keyboard);
+	initGL();                       // Our own OpenGL initialization
+	glutMainLoop();                 // Enter the infinite event-processing loop
 	return 0;
 }

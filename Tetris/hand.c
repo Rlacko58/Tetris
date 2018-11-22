@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 
+//Debughoz
 #include "debugmalloc.h"
 
 //A tetrisek lehetséges verziói
