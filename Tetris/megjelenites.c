@@ -38,56 +38,51 @@ void Ujrameretez(GLsizei width, GLsizei height) {  // GLsizei (int)
 	}
 }
 
+void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret){
+	glPushMatrix();	
+	glTranslatef(x, y, 0);	//Megfelelo poziciora rajzolas
+	glScalef(meret / 152.38, meret / 152.38, 0);	//Megfelelo meret beallitasa
 
-void Palyakirajzol() {
-	int oszlopsz = 10;
-	int sorsz = 15;
-	GLfloat szelesseg = 0.75;
-	GLfloat magassag = 1;
-	
-	GLfloat kezdoPozx = -0.75;
-	GLfloat kezdoPozy = -0.95;
-	GLfloat NegyzetM;
-	if (oszlopsz > szelesseg) {
-		NegyzetM = (magassag / sorsz) * 2 - 0.02;
+	for (char* p = szoveg; *p; p++){
+		glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, *p); //Kirajzolas
 	}
-	else {
-		NegyzetM = (szelesseg / oszlopsz) * 2 - 0.02;
-	}
-	GLfloat Ugras = (szelesseg / oszlopsz)*2;
+	glPopMatrix();
+}
 
-	for (int i = 0; i < oszlopsz; i++) {
-		for (int j = 0; j < sorsz; j++) {
-			glPushMatrix();
-			glTranslatef(kezdoPozx+Ugras*i, kezdoPozy+Ugras*j, 0.0f);
-			glBegin(GL_QUADS);
-				glVertex2f(0, 0);
-				glVertex2f(0, NegyzetM);
-				glVertex2f(NegyzetM, NegyzetM);
-				glVertex2f(NegyzetM, 0);
-			glEnd();
-			glPopMatrix();
-		}
-	}
+void RajzolNegyzet(GLfloat x, GLfloat y, RGBA s) {
 	glPushMatrix();
-	glTranslatef(-0.95f, -0.75f, 0.0f);
+	glColor4f(s.r, s.g, s.b, s.a);
+	glTranslatef(x, y, 0.0f);
 	glBegin(GL_QUADS);
 	glVertex2f(0, 0);
-	glVertex2f(0, NegyzetM);
-	glVertex2f(NegyzetM, NegyzetM);
-	glVertex2f(NegyzetM, 0);
+	glVertex2f(0, 0.1);
+	glVertex2f(0.1, 0.1);
+	glVertex2f(0.1, 0);
 	glEnd();
 	glPopMatrix();
+}
 
-	glPushMatrix();
-	glTranslatef(-0.95f, -0.75f+(sorsz-3)*Ugras, 0.0f);
-	glBegin(GL_QUADS);
-	glVertex2f(0, 0);
-	glVertex2f(0, NegyzetM);
-	glVertex2f(NegyzetM, NegyzetM);
-	glVertex2f(NegyzetM, 0);
-	glEnd();
-	glPopMatrix();
+void RajzolPalya() {
+	RajzolNegyzet(-1, 0.9, (RGBA) { 0.0, 1.0, 0.0 , 1.0});
+}
+
+void Kirajzol() {
+
+	Szovegrajzol("HOLD", -1.3, 0.85, 0.09);
+	RajzolTetris(NULL, NULL);
+
+
+
+
+	/*	glPushMatrix();
+		glTranslatef(-0.95f, -0.75f+(sorsz-3)*Ugras, 0.0f);
+		glBegin(GL_QUADS);
+		glVertex2f(0, 0);
+		glVertex2f(0, NegyzetM);
+		glVertex2f(NegyzetM, NegyzetM);
+		glVertex2f(NegyzetM, 0);
+		glEnd();
+		glPopMatrix();	*/
 }
 
 

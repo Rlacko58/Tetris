@@ -14,7 +14,8 @@
 #include "hand.h"
 #include "megjelenites.h"
 
-GLfloat angle = 0.0f;
+
+
 
 /* Handler for window-repaint event. Call back when the window first appears and
    whenever the window needs to be re-painted. */
@@ -23,12 +24,11 @@ void display() {
 	glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
 	glLoadIdentity();               // Reset the model-view matrix
 
-	Palyakirajzol();
+	Kirajzol();
 
 	glutSwapBuffers();   // Double buffered - swap the front and back buffers
 
 	// Change the rotational angle after each display()
-	angle += 2.0f;
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -46,9 +46,11 @@ void keyboard(unsigned char key, int x, int y)
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);          // Initialize GLUT
 	glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode
-	glutInitWindowSize(700, 700);   // Set the window's initial width & height - non-square
-	glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
-	glutCreateWindow("Animation via Idle Function");  // Create window with the given title
+	glutInitWindowSize(1000, 700);   // Set the window's initial width & height - non-square
+	glutInitWindowPosition(
+		(glutGet(GLUT_SCREEN_WIDTH) - 1000) / 2,
+		(glutGet(GLUT_SCREEN_HEIGHT) - 700) / 2); 
+	glutCreateWindow("Tetris játék");  // Create window with the given title
 	glutDisplayFunc(display);       // Register callback handler for window re-paint event
 	glutReshapeFunc(Ujrameretez);       // Register callback handler for window re-size event
 	glutTimerFunc(0, Idozito, 0);     // First timer call immediately
