@@ -14,7 +14,8 @@
 #include "hand.h"
 #include "megjelenites.h"
 
-
+static Palya t;
+static Hand h;
 
 
 /* Handler for window-repaint event. Call back when the window first appears and
@@ -24,7 +25,7 @@ void display() {
 	glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
 	glLoadIdentity();               // Reset the model-view matrix
 
-	Kirajzol();
+	Kirajzol(&t, &h);
 
 	glutSwapBuffers();   // Double buffered - swap the front and back buffers
 
@@ -44,6 +45,22 @@ void keyboard(unsigned char key, int x, int y)
 }
 
 int main(int argc, char** argv) {
+	MatrixInit(&t, 25, 21);
+	KirajzInit(&t);
+	HandInit(&h, &t.oszlop, 4);
+	h.x += 5;
+	MatrixbaMasol(&t, &h);
+	free(h.v);
+	HandInit(&h, &t.oszlop, 2);
+
+	printf("\nTetris: \n");
+	for (int i = 0; i < h.size; i++) {
+		for (int j = 0; j < h.size; j++) {
+			printf("%d ", h.v[IND(i, j, h.size)]);
+		}
+		printf("\n");
+	}
+
 	glutInit(&argc, argv);          // Initialize GLUT
 	glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode
 	glutInitWindowSize(1000, 700);   // Set the window's initial width & height - non-square

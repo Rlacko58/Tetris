@@ -19,6 +19,7 @@ typedef struct {
 void Ujrameretez(GLsizei width, GLsizei height);
 void Idozito(int idokoz);
 void initGL();
-void Kirajzol();
+void KirajzInit(Palya *vp);
+void Kirajzol(Palya *vp, Hand *hp);
 
 #endif

@@ -15,6 +15,7 @@ PalyaMatrix* MatrixFoglal(Palya const *vp) {
 //A pálya inicializálása
 void MatrixInit(Palya *vp, int const sor, int const oszlop) {
 	vp->sor = sor; vp->oszlop = oszlop;
+	vp->Nsize = vp->width = vp->height  = 0;
 	vp->v = MatrixFoglal(vp);
 	vp->level = 1;
 	vp->sum = (int*)malloc(vp->sor * sizeof(int));

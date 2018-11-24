@@ -15,6 +15,8 @@ typedef struct {
 
 typedef struct {
 	int sor, oszlop;	//Pálya mérete
+	float Nsize;		//Négyzetek mérete
+	float width, height;//Pálya szélesség, magasság
 	int *sum;			//Soronkénti összeg
 	int level;			//Jelenlegi szint
 	PalyaMatrix *v;		//Pálya mátrixa
