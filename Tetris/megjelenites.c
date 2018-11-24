@@ -49,7 +49,7 @@ void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret){
 	glPopMatrix();
 }
 
-void RajzolNegyzet(GLfloat x, GLfloat y, RGBA s) {
+static void RajzolNegyzet(GLfloat x, GLfloat y, RGBA s) {
 	glPushMatrix();
 	glColor4f(s.r, s.g, s.b, s.a);
 	glTranslatef(x, y, 0.0f);
@@ -62,14 +62,14 @@ void RajzolNegyzet(GLfloat x, GLfloat y, RGBA s) {
 	glPopMatrix();
 }
 
-void RajzolPalya() {
+static void RajzolPalya() {
 	RajzolNegyzet(-1, 0.9, (RGBA) { 0.0, 1.0, 0.0 , 1.0});
 }
 
 void Kirajzol() {
 
 	Szovegrajzol("HOLD", -1.3, 0.85, 0.09);
-	RajzolTetris(NULL, NULL);
+	RajzolNegyzet(-1, 0.9, (RGBA) { 0.0, 1.0, 0.0, 1.0 });
 
 
 

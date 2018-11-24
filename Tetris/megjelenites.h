@@ -20,7 +20,5 @@ void Ujrameretez(GLsizei width, GLsizei height);
 void Idozito(int idokoz);
 void initGL();
 void Kirajzol();
-void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret);
-void reshape(int w, int h);
 
 #endif
