@@ -96,10 +96,10 @@ static void RajzolNegyzet(GLfloat *Nsize, GLfloat x, GLfloat y, RGBA s, bool mod
 	
 }
 
-static void RajzolHaloba(Palya *vp, int sor, int oszlop, RGBA s, bool mode) {
+static void RajzolHaloba(Palya *vp, float x, float y, int sor, int oszlop, RGBA s, bool mode) {
 	RajzolNegyzet(&vp->Nsize,
-		-1.0 + (2.0 - vp->width) / 2.0 + oszlop * vp->Nsize,
-		1.0 - (2.0 - vp->height) / 2.0 - (1+sor) * vp->Nsize,
+		x + (2.0 - vp->width) / 2.0 + oszlop * vp->Nsize,
+		y - (2.0 - vp->height) / 2.0 - (1+sor) * vp->Nsize,
 		s, mode);
 }
 
@@ -120,10 +120,10 @@ static void RajzolMatrix(Palya *vp) {
 	for (int i = 0; i < vp->sor; i++) {
 		for (int j = 0; j < vp->oszlop; j++) {
 			if (vp->v[IND(i,j,vp->oszlop)].e) {
-				RajzolHaloba(vp, i, j, SzinKonverter(vp->v[IND(i,j,vp->oszlop)].c),0);
+				RajzolHaloba(vp, -1.0, 1.0, i, j, SzinKonverter(vp->v[IND(i,j,vp->oszlop)].c),0);
 			}
 			else {
-				RajzolHaloba(vp, i, j, SzinKonverter(0),0);
+				RajzolHaloba(vp, -1.0, 1.0, i, j, SzinKonverter(0), 0);
 			}
 		}
 	}
@@ -133,7 +133,7 @@ static void RajzolTetris(Palya *vp, Hand *hp, int x, bool mode) {
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++)
 			if (hp->v[IND(i, j, hp->size)])
-				RajzolHaloba(vp, hp->x + i + x, hp->y + j, SzinKonverter(hp->color), mode);
+				RajzolHaloba(vp, -1.0, 1.0, hp->x + i + x, hp->y + j, SzinKonverter(hp->color), mode);
 }
 
 static void KirajzolIdo(Palya *vp, float x, float y, float size){
@@ -180,14 +180,52 @@ static void KirajzolEltSorSzam(Palya *vp, float x, float y, float size) {
 	Szovegrajzol(&sorok, x, y, size);
 }
 
+static void RajzolVTetris(Palya *vp, bool* t, int size, float x, float y, int szin) {
+	
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			if (t[IND(i, j, size)])
+				RajzolHaloba(vp, x, y, i, j, SzinKonverter(szin), 0);
+		}
+	}
+}
+
+static void RajzolTarsoly(Palya *vp) {
+	if (vp->Tarsoly != -1) {
+		int size;
+		if (vp->Tarsoly == 0) size = 4;
+		else if (vp->Tarsoly <= 5) size = 3;
+		else size = 2;
+
+		RajzolVTetris(vp, TetroVal(vp->Tarsoly), size, -1.4, 0.78, vp->Tarsoly+1);
+	}
+}
+
+static void RajzolKovi(Palya *vp) {
+	int size;
+	for (int i = 0; i < 2; i++) {
+		if (vp->KoviT[i] == 0) size = 4;
+		else if (vp->KoviT[i] <= 5) size = 3;
+		else size = 2;
+
+		RajzolVTetris(vp, TetroVal(vp->KoviT[i]), size, +1.125-0.055*(size-2), 0.78- i*0.3, vp->KoviT[i] + 1);
+	}
+}
+
 void Kirajzol(Palya *vp, Hand *hp) {
 	RajzolMatrix(vp);
 	RajzolTetris(vp, hp, AltetrisKord(vp, hp), 1);
 	RajzolTetris(vp, hp, 0, 0);
 	
 	glColor4f(1.0, 1.0, 1.0, 1.0);
-	Szovegrajzol("Tarsoly", -1.4, 0.85, 0.1);
+	Szovegrajzol("Kovetkezo", 1.03, 0.85, 0.1);
+	RajzolKovi(vp);
 
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+	Szovegrajzol("Tarsoly", -1.4, 0.85, 0.1);
+	RajzolTarsoly(vp);
+
+	glColor4f(1.0, 1.0, 1.0, 1.0);
 	Szovegrajzol("Menu", -1.4, 0.35, 0.1);
 
 	Szovegrajzol("Ido", -1.4, -0.05, 0.1);

@@ -10,6 +10,7 @@
 typedef struct {
 	int x, y;	//Pozicioja a Maphez képest
 	int color;	//Szine
+	int melyik;
 	int size;	//Mátrix mérete (size*size)
 	bool* v;	//Tartalma
 } Hand;
@@ -21,6 +22,7 @@ void HandInit(Hand* hp, int const *oszlop, int const melyik);
 //Elforgatja a kézben lévő tetrist és visszatér annak mátrixával
 bool* Forgat_jobbra(Hand const *hp);
 bool* Forgat_balra(Hand const *hp);
+bool* TetroVal(int melyik);
 
 
 

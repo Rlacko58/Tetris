@@ -23,6 +23,7 @@ bool* HandFoglal(Hand* hp) {
 
 //Kézben lévő tetris inicializáció
 void HandInit(Hand* hp,int const *oszlop, int const melyik) {
+	hp->melyik = melyik;
 	if (melyik == 0) hp->size = 4;
 	else if (melyik <= 5) hp->size = 3;
 	else hp->size = 2;
@@ -39,6 +40,18 @@ void HandInit(Hand* hp,int const *oszlop, int const melyik) {
 		case 4: hp->color = 5;	for (int i = 0; i < hp->size*hp->size; i++) hp->v[i] = S[i]; break;
 		case 5: hp->color = 6;	for (int i = 0; i < hp->size*hp->size; i++) hp->v[i] = Z[i]; break;
 		default: hp->color = 7; for (int i = 0; i < hp->size*hp->size; i++) hp->v[i] = O[i]; break;
+	}
+}
+
+bool* TetroVal(int melyik) {
+	switch (melyik) {
+		case 0: return I; break;
+		case 1: return T; break;
+		case 2: return L; break;
+		case 3: return J; break;
+		case 4: return S; break;
+		case 5: return Z; break;
+		default: return O; break;
 	}
 }
 

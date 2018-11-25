@@ -28,6 +28,8 @@ typedef struct {
 	int pont;			//Pontszám
 	int ElSorSzam;		//Eltüntetett sorok száma
 	PalyaMatrix *v;		//Pálya mátrixa
+	int Tarsoly;		//Tarsolyban lévő tetris
+	int KoviT[2];		//Kovetkező Tetrisek
 } Palya;
 
 //Memoria terulet lefoglalasa a pályának
@@ -46,5 +48,7 @@ bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp, int x, int y);
 void Eltuntet_sor(Palya *vp, int sor);
 
 int AltetrisKord(Palya const *vp, Hand const *hp);
+
+void KovTetris(Palya *vp, Hand *hp);
 
 #endif

@@ -19,6 +19,7 @@ static Palya t;
 static Hand h;
 static int GravInterv = 0;
 static int MpCounter = 0;
+static bool valthat = true;
 
 
 /* Handler for window-repaint event. Call back when the window first appears and
@@ -33,8 +34,8 @@ void display() {
 		if (!Utkozes(&t, &h, &h.v[0], 1, 0)) h.x += 1;
 		else {
 			MatrixbaMasol(&t, &h);
-			free(h.v);
-			HandInit(&h, &t.oszlop, rand()%7); //DONT FORGET THIS ***44!
+			valthat = true;
+			KovTetris(&t, &h);
 		}
 	}
 	
@@ -65,8 +66,25 @@ void keyboard(unsigned char key, int x, int y)
 		case 32: // Szóköz -- Letesz AlTetris helyére
 			h.x += AltetrisKord(&t, &h);
 			MatrixbaMasol(&t, &h);
-			free(h.v);
-			HandInit(&h, &t.oszlop, rand() % 7); //DONT FORGET THIS ***44!
+			valthat = true;
+			
+			KovTetris(&t, &h);
+
+			break;
+		case 'c':
+			if (valthat) {
+				if (t.Tarsoly != -1) {
+					int sv = t.Tarsoly;
+					t.Tarsoly = h.melyik;
+					free(h.v);
+					HandInit(&h, &t.oszlop, sv);
+				}
+				else {
+					t.Tarsoly = h.melyik;
+					KovTetris(&t, &h);
+				}
+				valthat = false;
+			}
 			break;
 	}
 	glutPostRedisplay();

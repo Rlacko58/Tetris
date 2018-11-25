@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 //Debughoz
 #include "debugmalloc.h"
@@ -16,6 +17,9 @@ PalyaMatrix* MatrixFoglal(Palya const *vp) {
 void MatrixInit(Palya *vp, int const sor, int const oszlop) {
 	vp->sor = sor; vp->oszlop = oszlop;
 	vp->Nsize = vp->width = vp->height = vp->time.p = vp->time.mp = 0;
+	vp->Tarsoly = -1;
+	vp->KoviT[0] = rand() % 7;
+	vp->KoviT[1] = rand() % 7;
 	vp->v = MatrixFoglal(vp);
 	vp->level = 1;
 	vp->sum = (int*)malloc(vp->sor * sizeof(int));
@@ -58,6 +62,13 @@ int AltetrisKord(Palya const *vp, Hand const *hp) {
 		x++;
 	}
 	return x-1;
+}
+
+void KovTetris(Palya *vp, Hand *hp) {
+	free(hp->v);
+	HandInit(hp, &vp->oszlop, vp->KoviT[0]);
+	vp->KoviT[0] = vp->KoviT[1];
+	vp->KoviT[1] = rand() % 7;
 }
 
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása
