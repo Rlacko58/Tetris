@@ -18,6 +18,7 @@
 static Palya t;
 static Hand h;
 static int GravInterv = 0;
+static int MpCounter = 0;
 
 
 /* Handler for window-repaint event. Call back when the window first appears and
@@ -27,7 +28,7 @@ void display() {
 	glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
 	glLoadIdentity();               // Reset the model-view matrix
 	
-	if (GravInterv == 100) {
+	if (GravInterv >= (int)100/t.level) {
 		GravInterv = 0;
 		if (!Utkozes(&t, &h, &h.v[0], 1, 0)) h.x += 1;
 		else {
@@ -36,9 +37,17 @@ void display() {
 			HandInit(&h, &t.oszlop, rand()%7); //DONT FORGET THIS ***44!
 		}
 	}
-			
+	
+	if (MpCounter == 100) { t.time.mp++; MpCounter = 0; }
+	if (t.time.mp == 60) { t.time.p++; t.time.mp = 0; }
+
+	if ((t.time.mp + (t.time.p * 60)) > 0 &&
+		(t.time.mp + (t.time.p * 60)) % 30 == 0 &&
+		MpCounter == 0) t.level++;
+
 	Kirajzol(&t, &h);
 
+	MpCounter++;
 	GravInterv++;
 	
 

@@ -136,28 +136,73 @@ static void RajzolTetris(Palya *vp, Hand *hp, int x, bool mode) {
 				RajzolHaloba(vp, hp->x + i + x, hp->y + j, SzinKonverter(hp->color), mode);
 }
 
+static void KirajzolIdo(Palya *vp, float x, float y, float size){
+	char ido[6] = "";
+	ido[0] = (int)(vp->time.p / 10 ) + 48;
+	ido[1] = (int)(vp->time.p % 10 ) + 48;
+	ido[2] = ':';
+	ido[3] = (int)(vp->time.mp / 10) + 48;
+	ido[4] = (int)(vp->time.mp % 10) + 48;
+	ido[5] = '\0';
+
+	Szovegrajzol(&ido, x, y, size);
+}
+
+static void KirajzolPont(Palya *vp, float x, float y, float size) {
+	char pont[8] = "";
+	int j = 6;
+	int svpont = vp->pont;
+	for (int i = 0; i < 7; i++) {
+		pont[j - i] = (int)(svpont % 10) + 48;
+		svpont /= 10;
+	}
+	pont[7] = '\0';
+	Szovegrajzol(&pont, x, y, size);
+}
+
+static void KirajzolSzint(Palya *vp, float x, float y, float size) {
+	char szint[3] = "";
+	szint[0] = (int)(vp->level / 10) + 48;
+	szint[1] = (int)(vp->level % 10) + 48;
+	szint[2] = '\0';
+	Szovegrajzol(&szint, x, y, size);
+}
+
+static void KirajzolEltSorSzam(Palya *vp, float x, float y, float size) {
+	char sorok[5] = "";
+	int j = 3;
+	int svsor = vp->ElSorSzam;
+	for (int i = 0; i < 4; i++) {
+		sorok[j - i] = (int)(svsor % 10) + 48;
+		svsor /= 10;
+	}
+	sorok[4] = '\0';
+	Szovegrajzol(&sorok, x, y, size);
+}
+
 void Kirajzol(Palya *vp, Hand *hp) {
 	RajzolMatrix(vp);
 	RajzolTetris(vp, hp, AltetrisKord(vp, hp), 1);
 	RajzolTetris(vp, hp, 0, 0);
 	
 	glColor4f(1.0, 1.0, 1.0, 1.0);
-	Szovegrajzol("Tarsoly", -1.35, 0.85, 0.1);
+	Szovegrajzol("Tarsoly", -1.4, 0.85, 0.1);
+
+	Szovegrajzol("Menu", -1.4, 0.35, 0.1);
+
+	Szovegrajzol("Ido", -1.4, -0.05, 0.1);
+	KirajzolIdo(vp, -1.4, -0.16, 0.1);
+
+	Szovegrajzol("Pont", -1.4, -0.30, 0.1);
+	KirajzolPont(vp, -1.4, -0.41, 0.1);
 
 
-	Szovegrajzol("Menu", -1.35, 0.35, 0.1);
+	Szovegrajzol("Szint", -1.4, -0.55, 0.1);
+	KirajzolSzint(vp, -1.4, -0.66, 0.1);
 
 
-	Szovegrajzol("Ido", -1.35, -0.30, 0.1);
-	Szovegrajzol("00:00", -1.35, -0.41, 0.1);
-
-
-	Szovegrajzol("Pont", -1.35, -0.55, 0.1);
-	Szovegrajzol("00000", -1.35, -0.66, 0.1);
-
-
-	Szovegrajzol("Sorok", -1.35, -0.8, 0.1);
-	Szovegrajzol("0", -1.35, -0.91, 0.1);
+	Szovegrajzol("Sorok", -1.4, -0.8, 0.1);
+	KirajzolEltSorSzam(vp, -1.4, -0.91, 0.1);
 	
 	
 	

@@ -14,11 +14,19 @@ typedef struct {
 } PalyaMatrix;
 
 typedef struct {
+	int p;				//Perc
+	int mp;				//Másodperc
+} Ido;
+
+typedef struct {
 	int sor, oszlop;	//Pálya mérete
 	float Nsize;		//Négyzetek mérete
 	float width, height;//Pálya szélesség, magasság
 	int *sum;			//Soronkénti összeg
 	int level;			//Jelenlegi szint
+	Ido time;			//Eltelt idő
+	int pont;			//Pontszám
+	int ElSorSzam;		//Eltüntetett sorok száma
 	PalyaMatrix *v;		//Pálya mátrixa
 } Palya;
 
