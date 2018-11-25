@@ -37,17 +37,25 @@ void MatrixbaMasol(Palya *vp, Hand *hp) {
 				vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].c = hp->color;
 			}
 }
-//Ütközés vizsgálat
-bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp) {
+//Ütközés vizsgálat x és y eltolással bp tömbre
+bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp, int x, int y) {
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++)
 			if (bp[IND(i, j, hp->size)]) {
-				if (vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].e ||
-					hp->y + j >= vp->oszlop || hp->y + j < 0 ||
-					hp->x <= 0)
+				if ( ((vp->v[IND(hp->x + i + x, hp->y + j + y, vp->oszlop)].e) && (hp->x+i>=0)) ||
+					hp->y + j + y >= vp->oszlop || hp->y + j + y < 0 ||
+					hp->x + x >= vp->sor)
 					return true;
 			}
 	return false;
+}
+
+int AltetrisKord(Palya const *vp, Hand const *hp) {
+	int x = 1;
+	while (!Utkozes(vp, hp, &hp->v[0], x, 0) && x<=vp->sor) {
+		x++;
+	}
+	return x-1;
 }
 
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása

@@ -32,7 +32,7 @@ void HandInit(Hand* hp,int const *oszlop, int const melyik) {
 
 	hp->v = HandFoglal(hp);
 	switch (melyik) {
-		case 0: hp->color = 1;  for (int i = 0; i < hp->size*hp->size; i++) hp->v[i] = I[i]; break;
+		case 0: hp->color = 1; hp->x = -1;  for (int i = 0; i < hp->size*hp->size; i++) hp->v[i] = I[i]; break;
 		case 1: hp->color = 2;	for (int i = 0; i < hp->size*hp->size; i++) hp->v[i] = T[i]; break;
 		case 2: hp->color = 3;	for (int i = 0; i < hp->size*hp->size; i++) hp->v[i] = L[i]; break;
 		case 3: hp->color = 4;	for (int i = 0; i < hp->size*hp->size; i++) hp->v[i] = J[i]; break;

@@ -65,8 +65,12 @@ void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret){
 	glPopMatrix();
 }
 
-static void RajzolNegyzet(GLfloat *Nsize, GLfloat x, GLfloat y, RGBA s) {
-	
+static void RajzolNegyzet(GLfloat *Nsize, GLfloat x, GLfloat y, RGBA s, bool mode) {
+	if (mode) {
+		s.r /= 3;
+		s.g /= 3;
+		s.b /= 3;
+	}
 	glPushMatrix();
 	glColor4f(s.r, s.g, s.b, s.a);
 	glTranslatef(x, y, 0.0f);
@@ -79,6 +83,7 @@ static void RajzolNegyzet(GLfloat *Nsize, GLfloat x, GLfloat y, RGBA s) {
 	glPopMatrix();
 
 	glPushMatrix();
+	
 	glColor4f(0.2, 0.2, 0.2, 1.0);
 	glTranslatef(x, y, 0.0f);
 	glBegin(GL_LINE_LOOP);
@@ -91,11 +96,11 @@ static void RajzolNegyzet(GLfloat *Nsize, GLfloat x, GLfloat y, RGBA s) {
 	
 }
 
-static void RajzolHaloba(Palya *vp, int sor, int oszlop, RGBA s) {
+static void RajzolHaloba(Palya *vp, int sor, int oszlop, RGBA s, bool mode) {
 	RajzolNegyzet(&vp->Nsize,
 		-1.0 + (2.0 - vp->width) / 2.0 + oszlop * vp->Nsize,
 		1.0 - (2.0 - vp->height) / 2.0 - (1+sor) * vp->Nsize,
-		s);
+		s, mode);
 }
 
 static RGBA SzinKonverter(int szin) {
@@ -115,10 +120,10 @@ static void RajzolMatrix(Palya *vp) {
 	for (int i = 0; i < vp->sor; i++) {
 		for (int j = 0; j < vp->oszlop; j++) {
 			if (vp->v[IND(i,j,vp->oszlop)].e) {
-				RajzolHaloba(vp, i, j, SzinKonverter(vp->v[IND(i,j,vp->oszlop)].c));
+				RajzolHaloba(vp, i, j, SzinKonverter(vp->v[IND(i,j,vp->oszlop)].c),0);
 			}
 			else {
-				RajzolHaloba(vp, i, j, SzinKonverter(0));
+				RajzolHaloba(vp, i, j, SzinKonverter(0),0);
 			}
 		}
 	}
@@ -128,13 +133,25 @@ static void RajzolTetris(Palya *vp, Hand *hp) {
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++)
 			if (hp->v[IND(i, j, hp->size)])
-				RajzolHaloba(vp, hp->x+i, hp->y+j, SzinKonverter(hp->color));
+				RajzolHaloba(vp, hp->x + i, hp->y + j, SzinKonverter(hp->color), 0);
 }
 
+static void RajzolAlTetris(Palya *vp, Hand *hp, int x) {
+	for (int i = 0; i < hp->size; i++)
+		for (int j = 0; j < hp->size; j++)
+			if (hp->v[IND(i, j, hp->size)])
+				RajzolHaloba(vp, hp->x + i + x, hp->y + j, SzinKonverter(hp->color), 1);
+}
+
+int waitclock=10;
 
 void Kirajzol(Palya *vp, Hand *hp) {
 	RajzolMatrix(vp);
+	RajzolAlTetris(vp, hp, AltetrisKord(vp, hp));
 	RajzolTetris(vp, hp);
+	
+	
+	
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	Szovegrajzol("HOLD", -1.3, 0.85, 0.09);

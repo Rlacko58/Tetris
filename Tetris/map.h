@@ -31,10 +31,12 @@ void MatrixInit(Palya *vp, int const sor, int const oszlop);
 //Tetris átmásolása a pályára
 void MatrixbaMasol(Palya *vp, Hand *hp);
 
-//Ütközés vizsgálat
-bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp);
+//Ütközés vizsgálat x és y eltolással bp tömbre
+bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp, int x, int y);
 
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása
 void Eltuntet_sor(Palya *vp, int sor);
+
+int AltetrisKord(Palya const *vp, Hand const *hp);
 
 #endif
