@@ -35,6 +35,8 @@ void MatrixbaMasol(Palya *vp, Hand *hp) {
 			if (hp->v[IND(i, j, hp->size)]) {
 				vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].e = true;
 				vp->v[IND(hp->x + i, hp->y + j, vp->oszlop)].c = hp->color;
+				vp->sum[hp->x + i]++; 
+				if (vp->sum[hp->x + i] == vp->oszlop) Eltuntet_sor(vp, hp->x + i);
 			}
 }
 //Ütközés vizsgálat x és y eltolással bp tömbre
@@ -42,9 +44,9 @@ bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp, int x, int y) {
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++)
 			if (bp[IND(i, j, hp->size)]) {
-				if ( ((vp->v[IND(hp->x + i + x, hp->y + j + y, vp->oszlop)].e) && (hp->x+i>=0)) ||
+				if (((vp->v[IND(hp->x + i + x, hp->y + j + y, vp->oszlop)].e) && (hp->x + i >= 0)) ||
 					hp->y + j + y >= vp->oszlop || hp->y + j + y < 0 ||
-					hp->x + x >= vp->sor)
+					hp->x + i + x > vp->sor-1)
 					return true;
 			}
 	return false;
@@ -61,6 +63,9 @@ int AltetrisKord(Palya const *vp, Hand const *hp) {
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása
 void Eltuntet_sor(Palya *vp, int sor) {
 	vp->sum[sor] = 0;
+	for (int i = sor; i > 0; i--) {
+		vp->sum[i] = vp->sum[i-1];
+	}
 	for (int i = 0; i < vp->oszlop; i++) {
 		for (int j = sor; j > 0; j--) {
 			vp->v[IND(j, i, vp->oszlop)].e = vp->v[IND(j-1, i, vp->oszlop)].e; 
@@ -68,6 +73,5 @@ void Eltuntet_sor(Palya *vp, int sor) {
 			vp->v[IND(j, i, vp->oszlop)].c = vp->v[IND(j-1, i, vp->oszlop)].c;
 			vp->v[IND(j - 1, i, vp->oszlop)].c = 0;
 		}
-		if (vp->v[IND(i, sor, vp->oszlop)].e) vp->sum[sor]++;
 	}
 }

@@ -27,7 +27,7 @@ void display() {
 	glMatrixMode(GL_MODELVIEW);     // To operate on Model-View matrix
 	glLoadIdentity();               // Reset the model-view matrix
 	
-	if (GravInterv == 50) {
+	if (GravInterv == 100) {
 		GravInterv = 0;
 		if (!Utkozes(&t, &h, &h.v[0], 1, 0)) h.x += 1;
 		else {
@@ -37,8 +37,6 @@ void display() {
 		}
 	}
 			
-	
-
 	Kirajzol(&t, &h);
 
 	GravInterv++;
@@ -102,30 +100,10 @@ void specialKeys(unsigned char key, int x, int y)
 
 int main(int argc, char** argv) {
 	srand(time(NULL));
-	MatrixInit(&t, 25, 21);
+	MatrixInit(&t, 20, 20);
 	KirajzInit(&t);
-	HandInit(&h, &t.oszlop, 4);
-	h.x += 5;
-	h.y -= 6;
-	MatrixbaMasol(&t, &h);
-	free(h.v);
+
 	HandInit(&h, &t.oszlop, 3);
-
-	printf("Matrix: \n");
-	for (int i = 0; i < t.sor; i++) {
-		for (int j = 0; j < t.oszlop; j++) {
-			printf("%d ", t.v[IND(i, j, t.oszlop)].e);
-		}
-		printf("\n");
-	}
-
-	printf("\nTetris: \n");
-	for (int i = 0; i < h.size; i++) {
-		for (int j = 0; j < h.size; j++) {
-			printf("%d ", h.v[IND(i, j, h.size)]);
-		}
-		printf("\n");
-	}
 
 	glutInit(&argc, argv);          // Initialize GLUT
 	glutInitDisplayMode(GLUT_DOUBLE);  // Enable double buffered mode

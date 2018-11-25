@@ -60,7 +60,7 @@ void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret){
 	glScalef(meret / 152.38, meret / 152.38, 0);	//Megfelelo meret beallitasa
 
 	for (char* p = szoveg; *p; p++){
-		glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, *p); //Kirajzolas
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, *p); //Kirajzolas
 	}
 	glPopMatrix();
 }
@@ -129,42 +129,46 @@ static void RajzolMatrix(Palya *vp) {
 	}
 }
 
-static void RajzolTetris(Palya *vp, Hand *hp) {
+static void RajzolTetris(Palya *vp, Hand *hp, int x, bool mode) {
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++)
 			if (hp->v[IND(i, j, hp->size)])
-				RajzolHaloba(vp, hp->x + i, hp->y + j, SzinKonverter(hp->color), 0);
+				RajzolHaloba(vp, hp->x + i + x, hp->y + j, SzinKonverter(hp->color), mode);
 }
-
-static void RajzolAlTetris(Palya *vp, Hand *hp, int x) {
-	for (int i = 0; i < hp->size; i++)
-		for (int j = 0; j < hp->size; j++)
-			if (hp->v[IND(i, j, hp->size)])
-				RajzolHaloba(vp, hp->x + i + x, hp->y + j, SzinKonverter(hp->color), 1);
-}
-
-int waitclock=10;
 
 void Kirajzol(Palya *vp, Hand *hp) {
 	RajzolMatrix(vp);
-	RajzolAlTetris(vp, hp, AltetrisKord(vp, hp));
-	RajzolTetris(vp, hp);
+	RajzolTetris(vp, hp, AltetrisKord(vp, hp), 1);
+	RajzolTetris(vp, hp, 0, 0);
 	
-	
-	
-
 	glColor4f(1.0, 1.0, 1.0, 1.0);
-	Szovegrajzol("HOLD", -1.3, 0.85, 0.09);
+	Szovegrajzol("Tarsoly", -1.35, 0.85, 0.1);
 
-	/*	glPushMatrix();
-		glTranslatef(-0.95f, -0.75f+(sorsz-3)*Ugras, 0.0f);
-		glBegin(GL_QUADS);
-		glVertex2f(0, 0);
-		glVertex2f(0, NegyzetM);
-		glVertex2f(NegyzetM, NegyzetM);
-		glVertex2f(NegyzetM, 0);
-		glEnd();
-		glPopMatrix();	*/
+
+	Szovegrajzol("Menu", -1.35, 0.35, 0.1);
+
+
+	Szovegrajzol("Ido", -1.35, -0.30, 0.1);
+	Szovegrajzol("00:00", -1.35, -0.41, 0.1);
+
+
+	Szovegrajzol("Pont", -1.35, -0.55, 0.1);
+	Szovegrajzol("00000", -1.35, -0.66, 0.1);
+
+
+	Szovegrajzol("Sorok", -1.35, -0.8, 0.1);
+	Szovegrajzol("0", -1.35, -0.91, 0.1);
+	
+	
+	
+	
+	/* Teszteléshez
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+	for (int i = 0; i < vp->sor; i++) {
+		char num[5];
+		_itoa(vp->sum[i], num, 10);
+		Szovegrajzol(num, -1.15, 0.93 - i * 0.1, 0.09);
+	}*/
 }
 
 
