@@ -1,6 +1,6 @@
 ﻿#include "megjelenites.h"
 
-#include "stdio.h"
+#include "stdio.h" //Tesztelésekhez konzolra iratás
 
 //Debughoz
 #include "debugmalloc.h"
@@ -14,7 +14,7 @@ void initGL() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Fekete
 }
 
-// "Timer"
+// Játék belső időzítője
 void Idozito(int idokoz) {
 	glutPostRedisplay(); //Jelenlegi ablak újrarajzolandónak jelölése
 	glutTimerFunc(Frissites_ms, Idozito, 0); // Időzítő indítása megint
@@ -40,11 +40,12 @@ void Ujrameretez(GLsizei width, GLsizei height) {  // GLsizei (int)
 	}
 }
 
-void KirajzInit(Palya *vp) {		/* Kis matek a megfelelő kirajzolásokhoz */
-	float Nmx = 0.1f;				//Maximális négyzet méret
-	float Nps = 2.0f / vp->oszlop;	//Négyzet / sor
-	float Npo = 2.0f / vp->sor;		//Négyzet / oszlop
-	float Nsize = 0.0f;				//Négyzet végső mérete
+// Kis matek a megfelelő kirajzolásokhoz
+void KirajzInit(Palya *vp) {		
+	float Nmx = 0.1f;				
+	float Nps = 2.0f / vp->oszlop;	
+	float Npo = 2.0f / vp->sor;		
+	float Nsize = 0.0f;				
 	if (Nps < Npo)	Nsize = Nps;
 	else			Nsize = Npo;
 
@@ -54,7 +55,8 @@ void KirajzInit(Palya *vp) {		/* Kis matek a megfelelő kirajzolásokhoz */
 	vp->height = Nsize * vp->sor;
 }
 
-void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret){
+//Szöveg kirajzolása x,y kordinátára adott mérettel
+static void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret){
 	glPushMatrix();	
 	glTranslatef(x, y, 0);	//Megfelelo poziciora rajzolas
 	glScalef(meret / 152.38, meret / 152.38, 0);	//Megfelelo meret beallitasa
@@ -65,8 +67,10 @@ void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret){
 	glPopMatrix();
 }
 
+/*	Négyzet rajzolása Nsize mérettel x,y kordinátára s színnel
+	Egyik mód a normál tetris rajzolása, másik mikor halványan kell */
 static void RajzolNegyzet(GLfloat *Nsize, GLfloat x, GLfloat y, RGBA s, bool mode) {
-	if (mode) {
+	if (mode) {	//Halványítás
 		s.r /= 3;
 		s.g /= 3;
 		s.b /= 3;
@@ -96,6 +100,7 @@ static void RajzolNegyzet(GLfloat *Nsize, GLfloat x, GLfloat y, RGBA s, bool mod
 	
 }
 
+//x, y kordináta szerint egy Nsize méretű négyzetrácsos hálóba rajzolás
 static void RajzolHaloba(Palya *vp, float x, float y, int sor, int oszlop, RGBA s, bool mode) {
 	RajzolNegyzet(&vp->Nsize,
 		x + (2.0 - vp->width) / 2.0 + oszlop * vp->Nsize,
@@ -103,19 +108,21 @@ static void RajzolHaloba(Palya *vp, float x, float y, int sor, int oszlop, RGBA 
 		s, mode);
 }
 
+//Visszatér adott szám alapján a megfelelő színkóddal
 static RGBA SzinKonverter(int szin) {
 	switch (szin) {
-	case 1: return (RGBA) { 1.0, 0.0, 0.0, 0.0 }; break;	//red
-	case 2: return (RGBA) { 0.0, 1.0, 0.0, 0.0 }; break;	//green
-	case 3: return (RGBA) { 0.0, 0.0, 1.0, 0.0 }; break;	//blue
-	case 4: return (RGBA) { 1.0, 0.7, 0.0, 0.0 }; break;	//orange
-	case 5: return (RGBA) { 1.0, 1.0, 0.0, 0.0 }; break;	//yellow
-	case 6: return (RGBA) { 0.4, 0.2, 0.6, 0.0 }; break;	//purple
-	case 7: return (RGBA) { 0.0, 0.7, 0.8, 0.0 }; break;	//cyan
-	default: return (RGBA) { 0.0, 0.0, 0.0, 0.0};
+	case 1: return (RGBA) { 1.0, 0.0, 0.0, 0.0 }; break;	//Piros
+	case 2: return (RGBA) { 0.0, 1.0, 0.0, 0.0 }; break;	//Zöld
+	case 3: return (RGBA) { 0.0, 0.0, 1.0, 0.0 }; break;	//Kék
+	case 4: return (RGBA) { 1.0, 0.7, 0.0, 0.0 }; break;	//Narancs
+	case 5: return (RGBA) { 1.0, 0.9, 0.0, 0.0 }; break;	//Sárga
+	case 6: return (RGBA) { 0.4, 0.2, 0.6, 0.0 }; break;	//lila
+	case 7: return (RGBA) { 0.0, 0.7, 0.8, 0.0 }; break;	//cián
+	default: return (RGBA) { 0.0, 0.0, 0.0, 0.0};			//Fekete
 	}
 }
 
+//Pályamátrix kirajzolása
 static void RajzolMatrix(Palya *vp) {
 	for (int i = 0; i < vp->sor; i++) {
 		for (int j = 0; j < vp->oszlop; j++) {
@@ -129,6 +136,7 @@ static void RajzolMatrix(Palya *vp) {
 	}
 }
 
+//Adott kézben lévő tetris kirajzolása
 static void RajzolTetris(Palya *vp, Hand *hp, int x, bool mode) {
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++)
@@ -136,22 +144,37 @@ static void RajzolTetris(Palya *vp, Hand *hp, int x, bool mode) {
 				RajzolHaloba(vp, -1.0, 1.0, hp->x + i + x, hp->y + j, SzinKonverter(hp->color), mode);
 }
 
-static void KirajzolIdo(Palya *vp, float x, float y, float size){
+
+//Adott bool tömbben lévő tetris kirajzolása
+static void RajzolVTetris(Palya static *vp, bool* t, int size, float x, float y, int szin) {
+	GLfloat nsize = 0.1;
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			if (t[IND(i, j, size)])
+				RajzolNegyzet(&nsize, x + j * 0.1, y - (1 + i) * 0.1,
+					SzinKonverter(szin), 0);
+		}
+	}
+}
+
+//Idő kirajzolása
+static void KirajzolIdo(Ido *t, float x, float y, float size){
 	char ido[6] = "";
-	ido[0] = (int)(vp->time.p / 10 ) + 48;
-	ido[1] = (int)(vp->time.p % 10 ) + 48;
+	ido[0] = (int)(t->p / 10 ) + 48;
+	ido[1] = (int)(t->p % 10 ) + 48;
 	ido[2] = ':';
-	ido[3] = (int)(vp->time.mp / 10) + 48;
-	ido[4] = (int)(vp->time.mp % 10) + 48;
+	ido[3] = (int)(t->mp / 10) + 48;
+	ido[4] = (int)(t->mp % 10) + 48;
 	ido[5] = '\0';
 
 	Szovegrajzol(&ido, x, y, size);
 }
 
-static void KirajzolPont(Palya *vp, float x, float y, float size) {
+//Pontszám kirajzolása
+static void KirajzolPont(int *ponts, float x, float y, float size) {
 	char pont[8] = "";
 	int j = 6;
-	int svpont = vp->pont;
+	int svpont = *ponts;
 	for (int i = 0; i < 7; i++) {
 		pont[j - i] = (int)(svpont % 10) + 48;
 		svpont /= 10;
@@ -160,14 +183,16 @@ static void KirajzolPont(Palya *vp, float x, float y, float size) {
 	Szovegrajzol(&pont, x, y, size);
 }
 
-static void KirajzolSzint(Palya *vp, float x, float y, float size) {
+//Szint kirajzolása
+static void KirajzolSzint(int *szints, float x, float y, float size) {
 	char szint[3] = "";
-	szint[0] = (int)(vp->level / 10) + 48;
-	szint[1] = (int)(vp->level % 10) + 48;
+	szint[0] = (int)(*szints / 10) + 48;
+	szint[1] = (int)(*szints % 10) + 48;
 	szint[2] = '\0';
 	Szovegrajzol(&szint, x, y, size);
 }
 
+//Eltüntetett sorok számának kirajzolása
 static void KirajzolEltSorSzam(Palya *vp, float x, float y, float size) {
 	char sorok[5] = "";
 	int j = 3;
@@ -180,16 +205,7 @@ static void KirajzolEltSorSzam(Palya *vp, float x, float y, float size) {
 	Szovegrajzol(&sorok, x, y, size);
 }
 
-static void RajzolVTetris(Palya *vp, bool* t, int size, float x, float y, int szin) {
-	
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
-			if (t[IND(i, j, size)])
-				RajzolHaloba(vp, x, y, i, j, SzinKonverter(szin), 0);
-		}
-	}
-}
-
+//Tarsolyban lévő tetris kirajzolása
 static void RajzolTarsoly(Palya *vp) {
 	if (vp->Tarsoly != -1) {
 		int size;
@@ -201,6 +217,7 @@ static void RajzolTarsoly(Palya *vp) {
 	}
 }
 
+//Következő tetrisek kirajzolása
 static void RajzolKovi(Palya *vp) {
 	int size;
 	for (int i = 0; i < 2; i++) {
@@ -212,7 +229,26 @@ static void RajzolKovi(Palya *vp) {
 	}
 }
 
-void Kirajzol(Palya *vp, Hand *hp) {
+//Ranglista megjelenítés
+static void RajzolRangLista(Palya *vp) {
+	for (int i = 0; i < 5; i++) {
+		if (vp->rlista[i].pont != -1) {
+			char helyezes[2] = "";
+			helyezes[0] = i + 1 + 48;
+			helyezes[1] = '.';
+			Szovegrajzol(&helyezes, 1.015, -0.01 - i * 0.2, 0.07);
+			Szovegrajzol(&vp->rlista[i].nev, 1.08, -0.01 - i * 0.2, 0.07);
+			KirajzolIdo(&vp->rlista[i].time, 1.25, -0.01 - i * 0.2, 0.07);
+			KirajzolPont(&vp->rlista[i].pont, 1.13, -0.1 - i * 0.2, 0.07);
+		}
+		else {
+			return;
+		}
+	}
+}
+
+//Játék közbeni Kirajzolás
+void JatekRajzol(Palya *vp, Hand *hp) {
 	RajzolMatrix(vp);
 	RajzolTetris(vp, hp, AltetrisKord(vp, hp), 1);
 	RajzolTetris(vp, hp, 0, 0);
@@ -222,36 +258,62 @@ void Kirajzol(Palya *vp, Hand *hp) {
 	RajzolKovi(vp);
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
+	Szovegrajzol("Ranglista", 1.03, 0.1, 0.1);
+	RajzolRangLista(vp);
+
+	glColor4f(1.0, 1.0, 1.0, 1.0);
 	Szovegrajzol("Tarsoly", -1.4, 0.85, 0.1);
 	RajzolTarsoly(vp);
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
-	Szovegrajzol("Menu", -1.4, 0.35, 0.1);
+	Szovegrajzol("|Meret|", -1.4, 0.35, 0.1);
+	Ido sv = { vp->sor, vp->oszlop };
+	KirajzolIdo(&sv, -1.4, 0.24, 0.1);
 
 	Szovegrajzol("Ido", -1.4, -0.05, 0.1);
-	KirajzolIdo(vp, -1.4, -0.16, 0.1);
+	KirajzolIdo(&vp->time, -1.4, -0.16, 0.1);
 
 	Szovegrajzol("Pont", -1.4, -0.30, 0.1);
-	KirajzolPont(vp, -1.4, -0.41, 0.1);
+	KirajzolPont(&vp->pont, -1.4, -0.41, 0.1);
 
 
 	Szovegrajzol("Szint", -1.4, -0.55, 0.1);
-	KirajzolSzint(vp, -1.4, -0.66, 0.1);
+	KirajzolSzint(&vp->level, -1.4, -0.66, 0.1);
 
+	Szovegrajzol("Sorok", -1.4, -0.8, 0.1);
+	KirajzolEltSorSzam(vp, -1.4, -0.91, 0.1);	
+}
+
+//Játék vége kiiratás
+void GameOverRajzol(Palya *vp, Hand *hp) {
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+	Szovegrajzol("Jatek vege", -0.3, 0.0, 0.1);
+
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+	Szovegrajzol("Kovetkezo", 1.03, 0.85, 0.1);
+	RajzolKovi(vp);
+
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+	Szovegrajzol("Ranglista", 1.03, 0.1, 0.1);
+	RajzolRangLista(vp);
+
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+	Szovegrajzol("Tarsoly", -1.4, 0.85, 0.1);
+	RajzolTarsoly(vp);
+
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+	Szovegrajzol("|Meret|", -1.4, 0.35, 0.1);
+
+	Szovegrajzol("Ido", -1.4, -0.05, 0.1);
+	KirajzolIdo(&vp->time, -1.4, -0.16, 0.1);
+
+	Szovegrajzol("Pont", -1.4, -0.30, 0.1);
+	KirajzolPont(&vp->pont, -1.4, -0.41, 0.1);
+
+
+	Szovegrajzol("Szint", -1.4, -0.55, 0.1);
+	KirajzolSzint(&vp->level, -1.4, -0.66, 0.1);
 
 	Szovegrajzol("Sorok", -1.4, -0.8, 0.1);
 	KirajzolEltSorSzam(vp, -1.4, -0.91, 0.1);
-	
-	
-	
-	
-	/* Teszteléshez
-	glColor4f(1.0, 1.0, 1.0, 1.0);
-	for (int i = 0; i < vp->sor; i++) {
-		char num[5];
-		_itoa(vp->sum[i], num, 10);
-		Szovegrajzol(num, -1.15, 0.93 - i * 0.1, 0.09);
-	}*/
 }
-
-

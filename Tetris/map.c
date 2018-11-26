@@ -13,15 +13,33 @@ PalyaMatrix* MatrixFoglal(Palya const *vp) {
 	return (PalyaMatrix*)malloc((vp->sor) * (vp->oszlop) * sizeof(PalyaMatrix));
 }
 
+//Ranglista statikus feltöltése
+void Ranglistabeolvas(Palya *vp) {
+	Ido svt = { 1,56 };
+	Ranglista sv = { "elso", 556, svt};
+	vp->rlista[0] = sv;
+	vp->rlista[1].pont = -1;
+	svt = (Ido){ 0,45 };
+	sv = (Ranglista){ "bela", 341, svt };
+	vp->rlista[1] = sv;
+	vp->rlista[2].pont = -1;
+	svt = (Ido){ 0,31 };
+	sv = (Ranglista){ "Jani", 267, svt };
+	vp->rlista[2] = sv;
+	vp->rlista[3].pont = -1;
+}
+
 //A pálya inicializálása
 void MatrixInit(Palya *vp, int const sor, int const oszlop) {
 	vp->sor = sor; vp->oszlop = oszlop;
-	vp->Nsize = vp->width = vp->height = vp->time.p = vp->time.mp = 0;
+	vp->Nsize = vp->width = vp->height = 0; 
+	vp->time.p = vp->time.mp = 0;
 	vp->Tarsoly = -1;
 	vp->KoviT[0] = rand() % 7;
 	vp->KoviT[1] = rand() % 7;
 	vp->v = MatrixFoglal(vp);
 	vp->level = 1;
+	
 	vp->sum = (int*)malloc(vp->sor * sizeof(int));
 	for (int i = 0; i < vp->sor; i++) {
 		vp->sum[i] = 0;
@@ -56,6 +74,7 @@ bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp, int x, int y) {
 	return false;
 }
 
+//Alsó tetris távolsága a jelenlegitől
 int AltetrisKord(Palya const *vp, Hand const *hp) {
 	int x = 1;
 	while (!Utkozes(vp, hp, &hp->v[0], x, 0) && x<=vp->sor) {
@@ -64,16 +83,19 @@ int AltetrisKord(Palya const *vp, Hand const *hp) {
 	return x-1;
 }
 
-void KovTetris(Palya *vp, Hand *hp) {
+//Következő tetrisre állítás
+void KovTetris(Palya *vp, Hand *hp, bool* check, bool *vege) {
 	free(hp->v);
 	HandInit(hp, &vp->oszlop, vp->KoviT[0]);
 	vp->KoviT[0] = vp->KoviT[1];
 	vp->KoviT[1] = rand() % 7;
+	if (Utkozes(vp, hp, check, 0, 0)) *vege = true;
 }
 
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása
 void Eltuntet_sor(Palya *vp, int sor) {
 	vp->ElSorSzam++;
+	vp->pont += vp->oszlop*vp->level*vp->ElSorSzam;
 	vp->sum[sor] = 0;
 	for (int i = sor; i > 0; i--) {
 		vp->sum[i] = vp->sum[i-1];

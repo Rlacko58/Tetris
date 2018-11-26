@@ -16,6 +16,19 @@ static bool S[9] = { 0,1,1,1,1,0,0,0,0 };
 static bool Z[9] = { 1,1,0,0,1,1,0,0,0 };
 static bool O[4] = { 1,1,1,1 };
 
+//Kiválasztott tetrist adja vissza (belső globális változók)
+bool* TetroVal(int melyik) {
+	switch (melyik) {
+	case 0: return I; break;
+	case 1: return T; break;
+	case 2: return L; break;
+	case 3: return J; break;
+	case 4: return S; break;
+	case 5: return Z; break;
+	default: return O; break;
+	}
+}
+
 //Lefoglalja a tetris mátrixát
 bool* HandFoglal(Hand* hp) {
 	return (bool*)malloc((hp->size)*(hp->size) * sizeof(bool));
@@ -43,18 +56,6 @@ void HandInit(Hand* hp,int const *oszlop, int const melyik) {
 	}
 }
 
-bool* TetroVal(int melyik) {
-	switch (melyik) {
-		case 0: return I; break;
-		case 1: return T; break;
-		case 2: return L; break;
-		case 3: return J; break;
-		case 4: return S; break;
-		case 5: return Z; break;
-		default: return O; break;
-	}
-}
-
 //Elforgatja a kézben lévő tetrist és visszatér annak mátrixával
 bool* Forgat_jobbra(Hand const *hp) {  //Jobbra forgat
 	bool* sv = HandFoglal(hp);
@@ -65,18 +66,6 @@ bool* Forgat_jobbra(Hand const *hp) {  //Jobbra forgat
 	for (int i = 0; i < hp->size; i++)
 		for (int j = 0; j < hp->size; j++) {
 			sv[IND(j, hp->size - 1 - i,hp->size)] = hp->v[IND(i, j, hp->size)];
-		}
-	return sv;
-}
-bool* Forgat_balra(Hand const *hp) {  //Balra forgat
-	bool* sv = HandFoglal(hp);
-	if (hp->size == 2) {
-		for (int i = 0; i < 4; i++) sv[i] = true;
-		return sv;
-	}
-	for (int i = 0; i < hp->size; i++)
-		for (int j = 0; j < hp->size; j++) {
-			sv[IND(j, i, hp->size)] = hp->v[IND(i, hp->size - 1 - j, hp->size)];
 		}
 	return sv;
 }

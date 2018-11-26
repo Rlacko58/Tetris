@@ -1,8 +1,9 @@
 ﻿#ifndef MAP_H
 #define MAP_H
-#include "hand.h"
-
 #include <stdbool.h>
+
+//Külső fájlok
+#include "hand.h"
 
 //Mátrixszerű pointer elérés egyszerűsítése
 #define IND(x,y,oszlop) ((x) * oszlop + (y))
@@ -18,6 +19,12 @@ typedef struct {
 	int mp;				//Másodperc
 } Ido;
 
+typedef struct Rang{
+	char nev[6];		//Játékos neve
+	int pont;			//Pontszáma
+	Ido time;			//Ideje
+} Ranglista;
+
 typedef struct {
 	int sor, oszlop;	//Pálya mérete
 	float Nsize;		//Négyzetek mérete
@@ -30,6 +37,7 @@ typedef struct {
 	PalyaMatrix *v;		//Pálya mátrixa
 	int Tarsoly;		//Tarsolyban lévő tetris
 	int KoviT[2];		//Kovetkező Tetrisek
+	Ranglista rlista[500];			//Ranglista
 } Palya;
 
 //Memoria terulet lefoglalasa a pályának
@@ -47,8 +55,12 @@ bool Utkozes(Palya const *vp, Hand const *hp, bool const *bp, int x, int y);
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása
 void Eltuntet_sor(Palya *vp, int sor);
 
+//Alsó tetris távolsága a jelenlegitől
 int AltetrisKord(Palya const *vp, Hand const *hp);
 
+//Következő tetrisre állítás
 void KovTetris(Palya *vp, Hand *hp);
+
+void Ranglistabeolvas(Palya *vp);
 
 #endif
