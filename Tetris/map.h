@@ -20,7 +20,7 @@ typedef struct {
 } Ido;
 
 typedef struct Rang{
-	char nev[6];		//Játékos neve
+	char *nev;		//Játékos neve
 	int pont;			//Pontszáma
 	Ido time;			//Ideje
 } Ranglista;
@@ -39,6 +39,14 @@ typedef struct {
 	int KoviT[2];		//Kovetkező Tetrisek
 	Ranglista rlista[500];			//Ranglista
 } Palya;
+
+typedef enum FInp {
+	nev,
+	score,
+	perc,
+	masodperc,
+	vegeell
+} FInp;
 
 //Memoria terulet lefoglalasa a pályának
 PalyaMatrix* MatrixFoglal(Palya const *vp);
@@ -59,8 +67,10 @@ void Eltuntet_sor(Palya *vp, int sor);
 int AltetrisKord(Palya const *vp, Hand const *hp);
 
 //Következő tetrisre állítás
-void KovTetris(Palya *vp, Hand *hp);
+void KovTetris(Palya *vp, Hand *hp, bool *vege);
 
 void Ranglistabeolvas(Palya *vp);
+
+void RanglistaRendez(Palya *vp);
 
 #endif

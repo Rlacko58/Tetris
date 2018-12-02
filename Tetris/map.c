@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 
 //Debughoz
 #include "debugmalloc.h"
@@ -13,20 +14,101 @@ PalyaMatrix* MatrixFoglal(Palya const *vp) {
 	return (PalyaMatrix*)malloc((vp->sor) * (vp->oszlop) * sizeof(PalyaMatrix));
 }
 
-//Ranglista statikus feltöltése
+//Ranglista két elemének cserélése
+static void RangCsere(Ranglista *a, Ranglista *b) {
+	Ranglista sv;
+	sv.nev = a->nev; sv.pont = a->pont; sv.time = a->time;
+	a->nev = b->nev; a->pont = b->pont; a->time = b->time;
+	b->nev = sv.nev; b->pont = sv.pont; b->time = sv.time;
+}
+
+//Ranglista rendezése
+void RanglistaRendez(Palya *vp) {
+	int i = 1;
+	int j = 0;
+	int maxhely = 0;
+	while (true) {
+		if (vp->rlista[i].pont == -1) {
+			//printf("%d ", i);
+			if (vp->rlista[j].pont == -1) break;
+			RangCsere(&vp->rlista[j], &vp->rlista[maxhely]);
+
+			j++; maxhely = j; i = j;
+
+		}
+		if (vp->rlista[maxhely].pont < vp->rlista[i].pont) maxhely = i;
+		if (vp->rlista[i].pont != -1) i++;
+	}
+}
+
+//Ranglista feltöltése fájlból
 void Ranglistabeolvas(Palya *vp) {
-	Ido svt = { 1,56 };
-	Ranglista sv = { "elso", 556, svt};
-	vp->rlista[0] = sv;
-	vp->rlista[1].pont = -1;
-	svt = (Ido){ 0,45 };
-	sv = (Ranglista){ "bela", 341, svt };
-	vp->rlista[1] = sv;
-	vp->rlista[2].pont = -1;
-	svt = (Ido){ 0,31 };
-	sv = (Ranglista){ "Jani", 267, svt };
-	vp->rlista[2] = sv;
-	vp->rlista[3].pont = -1;
+	FILE *fp;
+	fp = fopen("HighScore.txt", "r");
+	int c;
+
+	char hnev[6];
+	int hscore = 0;
+	Ido hido = { 0,0 };
+
+	FInp fmode = nev;
+	int i = 0;
+	int ni = 0;
+	while (true) {
+		switch(fmode){
+		case nev: 
+			c = getc(fp);
+			if (c == ' ') {
+				hnev[ni] = '\0';
+				ni = 0;
+				fmode = score;
+			}
+			else {
+				hnev[ni] = c;
+				ni++;
+			}
+			break;
+		case score: 
+			c = getc(fp);
+			if (c == ' ') fmode = perc;
+			else {
+				hscore *= 10;
+				hscore += c - 48;
+			}
+			break;
+		case perc: 
+			c = getc(fp);
+			if (c == ' ') fmode = masodperc;
+			else {
+				hido.p *= 10;
+				hido.p += c - 48;
+			}
+			break;
+		case masodperc: 
+			c = getc(fp);
+			if (c == '\n' || c == EOF) fmode = vegeell;
+			else {
+				hido.mp *= 10;
+				hido.mp += c - 48;
+			}
+			break;
+		case vegeell: 
+			vp->rlista[i].nev = (char*)malloc(strlen(hnev)*sizeof(char));
+			strcpy(vp->rlista[i].nev, hnev);
+			vp->rlista[i].pont = hscore;
+			vp->rlista[i].time.p = hido.p;
+			vp->rlista[i].time.mp = hido.mp;
+
+			vp->rlista[i + 1].pont = -1;
+			hscore = 0; hido = (Ido){ 0,0 };
+			i++;
+			if (c == EOF) return;
+			else fmode = nev;
+			break;
+		}
+	}
+	
+	fclose(fp);
 }
 
 //A pálya inicializálása
@@ -84,12 +166,12 @@ int AltetrisKord(Palya const *vp, Hand const *hp) {
 }
 
 //Következő tetrisre állítás
-void KovTetris(Palya *vp, Hand *hp, bool* check, bool *vege) {
+void KovTetris(Palya *vp, Hand *hp, bool *vege) {
 	free(hp->v);
 	HandInit(hp, &vp->oszlop, vp->KoviT[0]);
 	vp->KoviT[0] = vp->KoviT[1];
 	vp->KoviT[1] = rand() % 7;
-	if (Utkozes(vp, hp, check, 0, 0)) *vege = true;
+	if (Utkozes(vp, hp, hp->v, 0, 0)) *vege = true;
 }
 
 //Adott sor eltüntetése, majd fölötte lévők lejebb húzása

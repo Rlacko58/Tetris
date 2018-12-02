@@ -33,7 +33,7 @@ void Jatek() {
 		else {		//Ha ütközés lenne, bemásolja és engedélyezi a tarsolyba rakást
 			MatrixbaMasol(&t, &h);
 			valthat = true;
-			KovTetris(&t, &h, &h.v[0], &vege);
+			KovTetris(&t, &h, &vege);
 		}
 	}
 	//Másodperc számláló, 10milliszekundomonként hívja meg magát a program
@@ -53,7 +53,6 @@ void display() {
 	glClear(GL_COLOR_BUFFER_BIT);   // Törlés
 	glMatrixMode(GL_MODELVIEW);     // Modelnézetű mátrixban való dolgozás
 	glLoadIdentity();               // Alaphelyzetbe állítás
-	
 	if (!vege) {
 		Jatek();	//Változók és feltételek
 
@@ -68,7 +67,6 @@ void display() {
 		GameOverRajzol(&t, &h);
 	}
 
-	
 
 	glutSwapBuffers();   // kicseréli az elöl lévő buffert a hátul lévővel
 }
@@ -85,7 +83,7 @@ void keyboard(unsigned char key, int x, int y)	//Egyszerűbb gombok
 			MatrixbaMasol(&t, &h);			//Bemásol
 
 			valthat = true;
-			KovTetris(&t, &h);				//Következő tetrisre váltás
+			KovTetris(&t, &h, &vege);				//Következő tetrisre váltás
 			break;
 		case 'c':
 			if (valthat) {					//Tarsolyba tétel / csere
@@ -97,7 +95,7 @@ void keyboard(unsigned char key, int x, int y)	//Egyszerűbb gombok
 				}
 				else {						//Ha üres
 					t.Tarsoly = h.melyik;
-					KovTetris(&t, &h);
+					KovTetris(&t, &h, &vege);
 				}
 				valthat = false;			//Legközelebbi bemásolásig
 			}
@@ -149,7 +147,8 @@ int main(int argc, char** argv) {
 
 	MatrixInit(&t, 30, 20);			//Kezdő pálya inicializáció
 	KirajzInit(&t);					//Kirajzoláshoz szükséges inicializáció
-	Ranglistabeolvas(&t);
+	Ranglistabeolvas(&t);			//Ranglista fájlból beolvasása
+	RanglistaRendez(&t);
 
 	HandInit(&h, &t.oszlop, 3);		//Első tetris kézbe helyezése
 

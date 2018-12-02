@@ -58,6 +58,7 @@ void KirajzInit(Palya *vp) {
 //Szöveg kirajzolása x,y kordinátára adott mérettel
 static void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret){
 	glPushMatrix();	
+	
 	glTranslatef(x, y, 0);	//Megfelelo poziciora rajzolas
 	glScalef(meret / 152.38, meret / 152.38, 0);	//Megfelelo meret beallitasa
 
@@ -237,7 +238,7 @@ static void RajzolRangLista(Palya *vp) {
 			helyezes[0] = i + 1 + 48;
 			helyezes[1] = '.';
 			Szovegrajzol(&helyezes, 1.015, -0.01 - i * 0.2, 0.07);
-			Szovegrajzol(&vp->rlista[i].nev, 1.08, -0.01 - i * 0.2, 0.07);
+			Szovegrajzol(vp->rlista[i].nev, 1.08, -0.01 - i * 0.2, 0.07);
 			KirajzolIdo(&vp->rlista[i].time, 1.25, -0.01 - i * 0.2, 0.07);
 			KirajzolPont(&vp->rlista[i].pont, 1.13, -0.1 - i * 0.2, 0.07);
 		}
