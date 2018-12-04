@@ -37,16 +37,9 @@ typedef struct {
 	PalyaMatrix *v;		//Pálya mátrixa
 	int Tarsoly;		//Tarsolyban lévő tetris
 	int KoviT[2];		//Kovetkező Tetrisek
+	char *nev;			//Jatekos neve
 	Ranglista rlista[500];			//Ranglista
 } Palya;
-
-typedef enum FInp {
-	nev,
-	score,
-	perc,
-	masodperc,
-	vegeell
-} FInp;
 
 //Memoria terulet lefoglalasa a pályának
 PalyaMatrix* MatrixFoglal(Palya const *vp);
@@ -72,5 +65,11 @@ void KovTetris(Palya *vp, Hand *hp, bool *vege);
 void Ranglistabeolvas(Palya *vp);
 
 void RanglistaRendez(Palya *vp);
+
+void Ranglistament(Palya *vp);
+
+void Nevhezir(Palya *vp, int c);
+void NevbolTorol(Palya *vp);
+void Ranglistahozad(Palya *vp);
 
 #endif

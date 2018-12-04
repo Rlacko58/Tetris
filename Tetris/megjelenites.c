@@ -285,10 +285,21 @@ void JatekRajzol(Palya *vp, Hand *hp) {
 	KirajzolEltSorSzam(vp, -1.4, -0.91, 0.1);	
 }
 
+static char* Nevkiir(Palya *vp) {
+	int i = 0;
+	char *sv = (char*)malloc(6 * sizeof(char)); strcpy(sv, ".....\0");
+	while (vp->nev[i] != '\0') sv[i++]=vp->nev[i];
+	return sv;
+}
+
 //Játék vége kiiratás
 void GameOverRajzol(Palya *vp, Hand *hp) {
 	glColor4f(1.0, 1.0, 1.0, 1.0);
-	Szovegrajzol("Jatek vege", -0.3, 0.0, 0.1);
+	Szovegrajzol("Jatek vege", -0.3, 0.1, 0.1);
+	char *sv = Nevkiir(vp);
+	Szovegrajzol("Neved: ", -0.3, -0.1, 0.1);
+	Szovegrajzol(sv, 0.0, -0.1, 0.1);
+	free(sv);
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	Szovegrajzol("Kovetkezo", 1.03, 0.85, 0.1);

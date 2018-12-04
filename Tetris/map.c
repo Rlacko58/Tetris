@@ -22,8 +22,24 @@ static void RangCsere(Ranglista *a, Ranglista *b) {
 	b->nev = sv.nev; b->pont = sv.pont; b->time = sv.time;
 }
 
+void Nevhezir(Palya *vp, int c) {
+	int i = 0;
+	while (vp->nev[i] != '\0' && i<7) i++;
+	if(i<5)	vp->nev[i] = c;
+	vp->nev[i + 1] = '\0';
+}
+
+void NevbolTorol(Palya *vp) {
+	int i = 0;
+	while (vp->nev[i] != '\0') i++;
+	if(i>0)	vp->nev[i - 1] = '\0';
+}
+
 //Ranglista rendezése
 void RanglistaRendez(Palya *vp) {
+	if (vp->rlista[0].pont == -1) {
+		return;
+	}
 	int i = 1;
 	int j = 0;
 	int maxhely = 0;
@@ -39,10 +55,40 @@ void RanglistaRendez(Palya *vp) {
 		if (vp->rlista[maxhely].pont < vp->rlista[i].pont) maxhely = i;
 		if (vp->rlista[i].pont != -1) i++;
 	}
+	Ranglistament(vp);
+}
+
+void Ranglistament(Palya *vp) {
+	FILE *fp;
+	fp = fopen("HighScore.txt", "w");
+	int i = 0;
+	while (vp->rlista[i].pont != -1) {
+		Ranglista *sv = &vp->rlista[i];
+		fprintf(fp,"%s %d %d %d\n", sv->nev, sv->pont, sv->time.p, sv->time.mp);
+		i++;
+	}
+	fclose(fp);
+}
+
+void Ranglistahozad(Palya *vp) {
+	int i = 0;
+	while (vp->rlista[i].pont != -1) i++;
+	vp->rlista[i].nev = vp->nev;
+	vp->rlista[i].pont = vp->pont;
+	vp->rlista[i].time = vp->time;
+	vp->rlista[i + 1].pont = -1;
 }
 
 //Ranglista feltöltése fájlból
 void Ranglistabeolvas(Palya *vp) {
+	typedef enum FInp {
+		nev,
+		score,
+		perc,
+		masodperc,
+		vegeell
+	} FInp;
+
 	FILE *fp;
 	fp = fopen("HighScore.txt", "r");
 	int c;
@@ -54,10 +100,16 @@ void Ranglistabeolvas(Palya *vp) {
 	FInp fmode = nev;
 	int i = 0;
 	int ni = 0;
-	while (true) {
+	bool mehet = true;
+	while (mehet) {
 		switch(fmode){
 		case nev: 
 			c = getc(fp);
+			if (c == EOF) { 
+				mehet = false;
+				if (i == 0) vp->rlista[0].pont = -1;
+				break; 
+			}
 			if (c == ' ') {
 				hnev[ni] = '\0';
 				ni = 0;
@@ -102,12 +154,11 @@ void Ranglistabeolvas(Palya *vp) {
 			vp->rlista[i + 1].pont = -1;
 			hscore = 0; hido = (Ido){ 0,0 };
 			i++;
-			if (c == EOF) return;
+			if (c == EOF) mehet=false;
 			else fmode = nev;
 			break;
 		}
 	}
-	
 	fclose(fp);
 }
 
@@ -121,6 +172,7 @@ void MatrixInit(Palya *vp, int const sor, int const oszlop) {
 	vp->KoviT[1] = rand() % 7;
 	vp->v = MatrixFoglal(vp);
 	vp->level = 1;
+	vp->nev = (char*)malloc(7 * sizeof(char));	strcpy(vp->nev, "\0");
 	
 	vp->sum = (int*)malloc(vp->sor * sizeof(int));
 	for (int i = 0; i < vp->sor; i++) {

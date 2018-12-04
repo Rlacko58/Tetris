@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 
 //Megjelenítéshez szükséges includok
 #include "GL/glut.h"
@@ -75,7 +76,7 @@ void keyboard(unsigned char key, int x, int y)	//Egyszerűbb gombok
 {
 	if (!vege) {
 		switch (key) {
-		case 27: // Escape -- Fejlesztéshez egy kis tweak, később menü lesz
+		case 27: // Escape -- Kilépés
 			glutDestroyWindow(1);
 			break;
 		case 32: // Szóköz -- Letesz az alul lévő tetris helyére
@@ -100,6 +101,19 @@ void keyboard(unsigned char key, int x, int y)	//Egyszerűbb gombok
 				valthat = false;			//Legközelebbi bemásolásig
 			}
 			break;
+		}
+	}
+	else {
+		if (isalpha(key)) {
+			Nevhezir(&t, key);
+		}
+		else if (key == 8) {
+			NevbolTorol(&t);
+		}
+		else if (key == 13) {
+			Ranglistahozad(&t);
+			RanglistaRendez(&t);
+			glutDestroyWindow(1);
 		}
 	}
 	glutPostRedisplay();					//Ablak újrajzolásra jelölése
@@ -137,6 +151,9 @@ void specialKeys(unsigned char key, int x, int y)	//Speciális gombok
 			break;
 		}
 	}
+	else {
+		
+	}
 	glutPostRedisplay();
 }
 
@@ -144,8 +161,10 @@ void specialKeys(unsigned char key, int x, int y)	//Speciális gombok
 
 int main(int argc, char** argv) {
 	srand(time(NULL));				//Randomizálás biztosításához
-
-	MatrixInit(&t, 30, 20);			//Kezdő pálya inicializáció
+	int szelesseg, magassag;
+	printf("Add meg a Szelesseget es magassagot (pl.: 10 20)\n");
+	scanf("%d %d", &szelesseg, &magassag);
+	MatrixInit(&t, magassag, szelesseg);			//Kezdő pálya inicializáció
 	KirajzInit(&t);					//Kirajzoláshoz szükséges inicializáció
 	Ranglistabeolvas(&t);			//Ranglista fájlból beolvasása
 	RanglistaRendez(&t);
