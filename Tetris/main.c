@@ -4,9 +4,10 @@
 #include <time.h>
 #include <ctype.h>
 
-//Megjelenítéshez szükséges includok
+//Megjelenítéshez szükséges dolgok
 #include "GL/glut.h"
 #include <windows.h>
+#include "GL/freeglut.h"
 
 //Debughoz
 #include "debugmalloc.h"
@@ -22,10 +23,15 @@ static Hand h;					//Kézben lévő tetris
 static int GravInterv = 0;		//Gravitáció időköz
 static int MpCounter = 0;		//Másodperc számláló
 static bool valthat = true;		//Tarsolyba lehet-e tenni?
-static int menu = 0;
 static bool vege = false;
+//	Azért kellenek ezek a belső változók, mivel a glut a játék 
+//	vezérlését végző függvényeknek csak a pointerjeit várja:
+//	Pl.:  void glutDisplayFunc(void (*func)(void));
+//	Tehát paraméteresen nem lehet átadni neki változókat
+//	De az alábbi "globális" változók, csak a fájlon belül
+//	vannak használva, kívülre mindent át kell adni.
 
-//Játék függvény
+//Játékhoz változók és feltételek
 void Jatek() {
 	// Gravitáció rendszeres újrameghívása
 	if (GravInterv >= (int)100 / t.level) {		//Szinttől függően sűrűbben
@@ -65,6 +71,7 @@ void display() {
 		GravInterv++;
 	}
 	else {
+		//Játék vége kirajzolása
 		GameOverRajzol(&t, &h);
 	}
 
@@ -72,30 +79,39 @@ void display() {
 	glutSwapBuffers();   // kicseréli az elöl lévő buffert a hátul lévővel
 }
 
+//A mallocolt memória területek felszabadítása
+static void Felszabadit() {
+	int i = 0;
+	while (t.rlista[i].nev != NULL) free(t.rlista[i++].nev);
+	if(t.v!=NULL)	free(t.v);
+	if(h.v!=NULL)	free(h.v);
+}
+
 void keyboard(unsigned char key, int x, int y)	//Egyszerűbb gombok
 {
 	if (!vege) {
 		switch (key) {
 		case 27: // Escape -- Kilépés
-			glutDestroyWindow(1);
+			glutLeaveMainLoop();	//Kilépés a glut végtelen ciklusából
 			break;
-		case 32: // Szóköz -- Letesz az alul lévő tetris helyére
+		case 32: // Szóköz -- Leteszi a tetrist alulra
 			h.x += AltetrisKord(&t, &h);	//Eltol
 			MatrixbaMasol(&t, &h);			//Bemásol
 
-			valthat = true;
+			valthat = true;							//Tarsolyba rakhat-e?
+
 			KovTetris(&t, &h, &vege);				//Következő tetrisre váltás
 			break;
-		case 'c':
-			if (valthat) {					//Tarsolyba tétel / csere
+		case 'c':	//c -- Tarsolyba rakás
+			if (valthat) {					//Tarsolyba tehet / cserélhet
 				if (t.Tarsoly != -1) {		//Ha nem üres
 					int sv = t.Tarsoly;
 					t.Tarsoly = h.melyik;
 					free(h.v);
-					HandInit(&h, &t.oszlop, sv);
+					HandInit(&h, &t.oszlop, sv); //Inicializálja a tarsolyban lévő szám alapján
 				}
 				else {						//Ha üres
-					t.Tarsoly = h.melyik;
+					t.Tarsoly = h.melyik;		//Belerakja a kézben lévő tetris számát
 					KovTetris(&t, &h, &vege);
 				}
 				valthat = false;			//Legközelebbi bemásolásig
@@ -104,16 +120,17 @@ void keyboard(unsigned char key, int x, int y)	//Egyszerűbb gombok
 		}
 	}
 	else {
-		if (isalpha(key)) {
-			Nevhezir(&t, key);
+		if (isalpha(key)) {		//Ha betűt ütött le
+			Nevhezir(&t, key);	//Hozzáírja a névhez
 		}
-		else if (key == 8) {
-			NevbolTorol(&t);
+		else if (key == 8) {	//Ha törlés gomb
+			NevbolTorol(&t);	//Egy karakter töröl
 		}
-		else if (key == 13) {
-			Ranglistahozad(&t);
+		else if (key == 13) {	//Ha enter
+			Ranglistahozaad(&t);
 			RanglistaRendez(&t);
-			glutDestroyWindow(1);
+			Felszabadit();
+			glutLeaveMainLoop();	
 		}
 	}
 	glutPostRedisplay();					//Ablak újrajzolásra jelölése
@@ -151,24 +168,20 @@ void specialKeys(unsigned char key, int x, int y)	//Speciális gombok
 			break;
 		}
 	}
-	else {
-		
-	}
 	glutPostRedisplay();
 }
 
-
-
-int main(int argc, char** argv) {
-	srand(time(NULL));				//Randomizálás biztosításához
+//Uj játék indítása
+void UjJatek(int argc, char** argv) {
 	int szelesseg, magassag;
-	printf("Add meg a Szelesseget es magassagot (pl.: 10 20)\n");
+	printf("Add meg a Szelesseget es magassagot (pl.: 20 30)\n");
 	scanf("%d %d", &szelesseg, &magassag);
-	if (szelesseg <= 0 || magassag <= 0) { szelesseg = 20; magassag = 30; }
-	MatrixInit(&t, magassag, szelesseg);			//Kezdő pálya inicializáció
-	KirajzInit(&t);					//Kirajzoláshoz szükséges inicializáció
-	Ranglistabeolvas(&t);			//Ranglista fájlból beolvasása
-	RanglistaRendez(&t);
+	if (szelesseg <= 0 || magassag <= 0) { szelesseg = 20; magassag = 30; }	//Ha nem jót adna meg, alap értékek
+
+	MatrixInit(&t, magassag, szelesseg);		//Kezdő pálya inicializáció
+	KirajzInit(&t);								//Kirajzoláshoz szükséges inicializáció
+	Ranglistabeolvas(&t);						//Ranglista fájlból beolvasása
+	RanglistaRendez(&t);						//Ranglista rendezése
 
 	HandInit(&h, &t.oszlop, 3);		//Első tetris kézbe helyezése
 
@@ -180,11 +193,17 @@ int main(int argc, char** argv) {
 		(glutGet(GLUT_SCREEN_HEIGHT) - 700) / 2);	//Középre elhelyezés
 	glutCreateWindow("Tetris játék");				// Ablak cím
 	glutDisplayFunc(display);			// Újrarajzoláskor lefuttatandó függvény beállítása
-	glutReshapeFunc(Ujrameretez);		// Register callback handler for window re-size event
-	glutTimerFunc(0, Idozito, 0);		// First timer call immediately
+	glutReshapeFunc(Ujrameretez);		// Ujraméretezéskor lefuttatandó ...
+	glutTimerFunc(0, Idozito, 0);		// Időzítő
 	glutKeyboardFunc(keyboard);			// Alap gombok kezelése
 	glutSpecialFunc(specialKeys);		// Speciális gombok
 	initGL();                       // Extra inicializációhoz szükséges dolgok
 	glutMainLoop();                 // Belépés a végtelen ciklusba
+}
+
+int main(int argc, char** argv) {
+	srand(time(NULL));				//Tényleg random számokat kapjunk
+	
+	UjJatek(argc, argv);
 	return 0;
 }

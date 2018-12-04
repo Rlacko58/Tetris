@@ -62,14 +62,21 @@ int AltetrisKord(Palya const *vp, Hand const *hp);
 //Következő tetrisre állítás
 void KovTetris(Palya *vp, Hand *hp, bool *vege);
 
+//Ranglista feltöltése fájlból
 void Ranglistabeolvas(Palya *vp);
 
+//Ranglistához hozzáadás
+void Ranglistahozaad(Palya *vp);
+
+//Ranglista rendezése
 void RanglistaRendez(Palya *vp);
 
+//Ranglista mentése
 void Ranglistament(Palya *vp);
 
+//Játékos nevének módosítása
 void Nevhezir(Palya *vp, int c);
 void NevbolTorol(Palya *vp);
-void Ranglistahozad(Palya *vp);
+
 
 #endif

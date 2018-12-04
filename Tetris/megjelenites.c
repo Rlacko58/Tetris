@@ -285,6 +285,7 @@ void JatekRajzol(Palya *vp, Hand *hp) {
 	KirajzolEltSorSzam(vp, -1.4, -0.91, 0.1);	
 }
 
+//Név módosítása, hogy a végén legyenek pontok
 static char* Nevkiir(Palya *vp) {
 	int i = 0;
 	char *sv = (char*)malloc(6 * sizeof(char)); strcpy(sv, ".....\0");

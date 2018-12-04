@@ -22,6 +22,7 @@ static void RangCsere(Ranglista *a, Ranglista *b) {
 	b->nev = sv.nev; b->pont = sv.pont; b->time = sv.time;
 }
 
+//Játékos nevéhez karakter hozzáfűzése
 void Nevhezir(Palya *vp, int c) {
 	int i = 0;
 	while (vp->nev[i] != '\0' && i<7) i++;
@@ -29,6 +30,7 @@ void Nevhezir(Palya *vp, int c) {
 	vp->nev[i + 1] = '\0';
 }
 
+//Játékos nevéből karakter törlése
 void NevbolTorol(Palya *vp) {
 	int i = 0;
 	while (vp->nev[i] != '\0') i++;
@@ -45,19 +47,17 @@ void RanglistaRendez(Palya *vp) {
 	int maxhely = 0;
 	while (true) {
 		if (vp->rlista[i].pont == -1) {
-			//printf("%d ", i);
 			if (vp->rlista[j].pont == -1) break;
 			RangCsere(&vp->rlista[j], &vp->rlista[maxhely]);
-
 			j++; maxhely = j; i = j;
-
 		}
 		if (vp->rlista[maxhely].pont < vp->rlista[i].pont) maxhely = i;
 		if (vp->rlista[i].pont != -1) i++;
 	}
-	Ranglistament(vp);
+	Ranglistament(vp);	
 }
 
+//Ranglista mentése
 void Ranglistament(Palya *vp) {
 	FILE *fp;
 	fp = fopen("HighScore.txt", "w");
@@ -70,9 +70,13 @@ void Ranglistament(Palya *vp) {
 	fclose(fp);
 }
 
-void Ranglistahozad(Palya *vp) {
+//Ranglistához hozzáadás
+void Ranglistahozaad(Palya *vp) {
 	int i = 0;
 	while (vp->rlista[i].pont != -1) i++;
+	if (vp->nev[0] == '\0') {
+		vp->nev[0] = '-'; vp->nev[1] = '\0';
+	}
 	vp->rlista[i].nev = vp->nev;
 	vp->rlista[i].pont = vp->pont;
 	vp->rlista[i].time = vp->time;
@@ -80,7 +84,8 @@ void Ranglistahozad(Palya *vp) {
 }
 
 //Ranglista feltöltése fájlból
-void Ranglistabeolvas(Palya *vp) {
+void Ranglistabeolvas(Palya *vp) { 
+	//Állapotgépes módszerrel megoldott fájlból beolvasás
 	typedef enum FInp {
 		nev,
 		score,
@@ -145,7 +150,7 @@ void Ranglistabeolvas(Palya *vp) {
 			}
 			break;
 		case vegeell: 
-			vp->rlista[i].nev = (char*)malloc(strlen(hnev)*sizeof(char));
+			vp->rlista[i].nev = (char*)malloc( (strlen(hnev)+1)*sizeof(char));
 			strcpy(vp->rlista[i].nev, hnev);
 			vp->rlista[i].pont = hscore;
 			vp->rlista[i].time.p = hido.p;
