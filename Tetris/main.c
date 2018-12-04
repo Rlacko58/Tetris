@@ -164,6 +164,7 @@ int main(int argc, char** argv) {
 	int szelesseg, magassag;
 	printf("Add meg a Szelesseget es magassagot (pl.: 10 20)\n");
 	scanf("%d %d", &szelesseg, &magassag);
+	if (szelesseg <= 0 || magassag <= 0) { szelesseg = 20; magassag = 30; }
 	MatrixInit(&t, magassag, szelesseg);			//Kezdő pálya inicializáció
 	KirajzInit(&t);					//Kirajzoláshoz szükséges inicializáció
 	Ranglistabeolvas(&t);			//Ranglista fájlból beolvasása
