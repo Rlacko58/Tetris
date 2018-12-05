@@ -176,7 +176,7 @@ void UjJatek(int argc, char** argv) {
 	int szelesseg, magassag;
 	printf("Add meg a Szelesseget es magassagot (pl.: 20 30)\n");
 	scanf("%d %d", &szelesseg, &magassag);
-	if (szelesseg <= 0 || magassag <= 0) { szelesseg = 20; magassag = 30; }	//Ha nem jót adna meg, alap értékek
+	if (szelesseg <= 0 || magassag <= 0 || szelesseg>200 || magassag>200) { szelesseg = 20; magassag = 30; }	//Ha nem jót adna meg, alap értékek
 
 	MatrixInit(&t, magassag, szelesseg);		//Kezdő pálya inicializáció
 	KirajzInit(&t);								//Kirajzoláshoz szükséges inicializáció

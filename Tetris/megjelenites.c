@@ -1,6 +1,7 @@
 ﻿#include "megjelenites.h"
 
-#include "stdio.h" //Tesztelésekhez konzolra iratás
+#include "stdio.h" 
+#include "string.h" 
 
 //Debughoz
 #include "debugmalloc.h"
@@ -161,13 +162,14 @@ static void RajzolVTetris(Palya static *vp, bool* t, int size, float x, float y,
 
 //Idő kirajzolása
 static void KirajzolIdo(Ido *t, float x, float y, float size){
-	char ido[6] = "";
-	ido[0] = (int)(t->p / 10 ) + 48;
-	ido[1] = (int)(t->p % 10 ) + 48;
-	ido[2] = ':';
-	ido[3] = (int)(t->mp / 10) + 48;
-	ido[4] = (int)(t->mp % 10) + 48;
-	ido[5] = '\0';
+	char ido[10] = "";
+	char bufferp[4];
+	sprintf(bufferp, "%02d", t->p);
+	char buffermp[4];
+	sprintf(buffermp, "%02d", t->mp);
+	strcat(ido, bufferp);
+	strcat(ido, ":");
+	strcat(ido, buffermp);
 
 	Szovegrajzol(&ido, x, y, size);
 }
@@ -308,6 +310,8 @@ void GameOverRajzol(Palya *vp, Hand *hp) {
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	Szovegrajzol("|Meret|", -1.4, 0.35, 0.1);
+	Ido sv = { vp->sor, vp->oszlop };
+	KirajzolIdo(&sv, -1.4, 0.24, 0.1);
 
 	Szovegrajzol("Ido", -1.4, -0.05, 0.1);
 	KirajzolIdo(&vp->time, -1.4, -0.16, 0.1);
