@@ -5,8 +5,7 @@
 //Debughoz
 #include "debugmalloc.h"
 
-//Belső globális változók
-static int Frissites_ms = 10; // Képfrissítési időköz milliszekundumokban 
+//Tehát a függvénynek csak egy értéket lehet átadni
 
 //OpenGL Grafikához szükséges inicializációk
 void initGL() {
@@ -14,10 +13,11 @@ void initGL() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Fekete
 }
 
+//void glutTimerFunc(unsigned int msecs, void(*func)(int value), value);
 // Játék belső időzítője
-void Idozito(int idokoz) {
+void Idozito(int idokoz, int Frissites_ms) {
 	glutPostRedisplay(); //Jelenlegi ablak újrarajzolandónak jelölése
-	glutTimerFunc(Frissites_ms, Idozito, 0); // Időzítő indítása megint
+	glutTimerFunc(idokoz, Idozito, idokoz); // Időzítő indítása megint, (mennyi idő múlva, melyik függvény, mit adjon át)
 }
 
 /* Handler - windows re-size :
@@ -39,6 +39,8 @@ void Ujrameretez(GLsizei width, GLsizei height) {  // GLsizei (int)
 		gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
 	}
 }
+// Ez a függvény, az alábbi oldal példája alapján készült:
+// http://www3.ntu.edu.sg/home/ehchua/programming/opengl/cg_introduction.html
 
 // Kis matek a megfelelő kirajzolásokhoz
 void KirajzInit(Palya *vp) {		
@@ -61,7 +63,6 @@ static void Szovegrajzol(char* szoveg, GLfloat x, GLfloat y, float meret){
 	
 	glTranslatef(x, y, 0);	//Megfelelo poziciora rajzolas
 	glScalef(meret / 152.38, meret / 152.38, 0);	//Megfelelo meret beallitasa
-
 	for (char* p = szoveg; *p; p++){
 		glutStrokeCharacter(GLUT_STROKE_ROMAN, *p); //Kirajzolas
 	}
@@ -285,22 +286,13 @@ void JatekRajzol(Palya *vp, Hand *hp) {
 	KirajzolEltSorSzam(vp, -1.4, -0.91, 0.1);	
 }
 
-//Név módosítása, hogy a végén legyenek pontok
-static char* Nevkiir(Palya *vp) {
-	int i = 0;
-	char *sv = (char*)malloc(6 * sizeof(char)); strcpy(sv, ".....\0");
-	while (vp->nev[i] != '\0') sv[i++]=vp->nev[i];
-	return sv;
-}
 
 //Játék vége kiiratás
 void GameOverRajzol(Palya *vp, Hand *hp) {
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	Szovegrajzol("Jatek vege", -0.3, 0.1, 0.1);
-	char *sv = Nevkiir(vp);
 	Szovegrajzol("Neved: ", -0.3, -0.1, 0.1);
-	Szovegrajzol(sv, 0.0, -0.1, 0.1);
-	free(sv);
+	Szovegrajzol(vp->nev, 0.0, -0.1, 0.1);
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	Szovegrajzol("Kovetkezo", 1.03, 0.85, 0.1);

@@ -17,7 +17,7 @@
 #include "hand.h"
 #include "megjelenites.h"
 
-//Belső globális változók
+//Belső globális változók ( OpenGL miatt szükségesek! lentebb bővebben )
 static Palya t;					//Pálya
 static Hand h;					//Kézben lévő tetris
 static int GravInterv = 0;		//Gravitáció időköz
@@ -26,8 +26,10 @@ static bool valthat = true;		//Tarsolyba lehet-e tenni?
 static bool vege = false;
 //	Azért kellenek ezek a belső változók, mivel a glut a játék 
 //	vezérlését végző függvényeknek csak a pointerjeit várja:
-//	Pl.:  void glutDisplayFunc(void (*func)(void));
-//	Tehát paraméteresen nem lehet átadni neki változókat
+//	Pl.:	void glutDisplayFunc(void (*func)(void));
+//			void glutKeyboardFunc(void(*func)(unsigned char key, int x, int y));
+//			stb., egyedül a timerfunction-nek lehet átadni értéket
+//	Tehát paraméteres változó átadás, legfeljebb c++ templatejeivel lehetne.
 //	De az alábbi "globális" változók, csak a fájlon belül
 //	vannak használva, kívülre mindent át kell adni.
 
@@ -74,8 +76,6 @@ void display() {
 		//Játék vége kirajzolása
 		GameOverRajzol(&t, &h);
 	}
-
-
 	glutSwapBuffers();   // kicseréli az elöl lévő buffert a hátul lévővel
 }
 
@@ -194,7 +194,7 @@ void UjJatek(int argc, char** argv) {
 	glutCreateWindow("Tetris játék");				// Ablak cím
 	glutDisplayFunc(display);			// Újrarajzoláskor lefuttatandó függvény beállítása
 	glutReshapeFunc(Ujrameretez);		// Ujraméretezéskor lefuttatandó ...
-	glutTimerFunc(0, Idozito, 0);		// Időzítő
+	glutTimerFunc(0, Idozito, 10);		// Időzítő, 10-es értéket ad át az Idozito függvénynek
 	glutKeyboardFunc(keyboard);			// Alap gombok kezelése
 	glutSpecialFunc(specialKeys);		// Speciális gombok
 	initGL();                       // Extra inicializációhoz szükséges dolgok
