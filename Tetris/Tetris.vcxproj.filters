@@ -30,6 +30,9 @@
     <ClCompile Include="megjelenites.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ranglista.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hand.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="megjelenites.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ranglista.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

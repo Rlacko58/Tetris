@@ -33,7 +33,7 @@ void KirajzInit(Palya *vp);
 //Játék közbeni Kirajzolás
 void JatekRajzol(Palya *vp, Hand *hp);
 
-//Játék vége kiiratás
+//Játék vége kirajzolás
 void GameOverRajzol(Palya *vp, Hand *hp);
 
 #endif

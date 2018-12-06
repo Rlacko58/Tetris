@@ -16,6 +16,7 @@
 #include "map.h"
 #include "hand.h"
 #include "megjelenites.h"
+#include "ranglista.h"
 
 //Belső globális változók ( OpenGL miatt szükségesek! lentebb bővebben )
 static Palya t;					//Pálya
@@ -23,7 +24,7 @@ static Hand h;					//Kézben lévő tetris
 static int GravInterv = 0;		//Gravitáció időköz
 static int MpCounter = 0;		//Másodperc számláló
 static bool valthat = true;		//Tarsolyba lehet-e tenni?
-static bool vege = false;
+static bool vege = false;		//Vége?
 //	Azért kellenek ezek a belső változók, mivel a glut a játék 
 //	vezérlését végző függvényeknek csak a pointerjeit várja:
 //	Pl.:	void glutDisplayFunc(void (*func)(void));
@@ -32,6 +33,13 @@ static bool vege = false;
 //	Tehát paraméteres változó átadás, legfeljebb c++ templatejeivel lehetne.
 //	De az alábbi "globális" változók, csak a fájlon belül
 //	vannak használva, kívülre mindent át kell adni.
+
+void Jatek();	//Játékot vezérlő változók módosítása
+void display();	//Rendszesen meghívódó függvény újrarajzolásra
+static void Felszabadit();	//Mallocolt területek felszabadítása
+void keyboard(unsigned char key, int x, int y);	//Egyszerűbb gombok
+void specialKeys(unsigned char key, int x, int y);	//Speciális gombok
+void UjJatek(int argc, char** argv);	//Ujjatek inicializáció
 
 //Játékhoz változók és feltételek
 void Jatek() {
@@ -176,7 +184,7 @@ void UjJatek(int argc, char** argv) {
 	int szelesseg, magassag;
 	printf("Add meg a Szelesseget es magassagot (pl.: 20 30)\n");
 	scanf("%d %d", &szelesseg, &magassag);
-	if (szelesseg <= 0 || magassag <= 0 || szelesseg>200 || magassag>200) { szelesseg = 20; magassag = 30; }	//Ha nem jót adna meg, alap értékek
+	if (szelesseg < 5 || magassag < 5 || szelesseg>200 || magassag>200) { szelesseg = 20; magassag = 30; }	//Ha nem jót adna meg, alap értékek
 
 	MatrixInit(&t, magassag, szelesseg);		//Kezdő pálya inicializáció
 	KirajzInit(&t);								//Kirajzoláshoz szükséges inicializáció

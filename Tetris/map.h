@@ -19,26 +19,26 @@ typedef struct {
 	int mp;				//Másodperc
 } Ido;
 
-typedef struct Rang{
-	char *nev;		//Játékos neve
+typedef struct Rang {
+	char *nev;			//Játékos neve
 	int pont;			//Pontszáma
 	Ido time;			//Ideje
 } Ranglista;
 
 typedef struct {
-	int sor, oszlop;	//Pálya mérete
-	float Nsize;		//Négyzetek mérete
-	float width, height;//Pálya szélesség, magasság
-	int *sum;			//Soronkénti összeg
-	int level;			//Jelenlegi szint
-	Ido time;			//Eltelt idő
-	int pont;			//Pontszám
-	int ElSorSzam;		//Eltüntetett sorok száma
-	PalyaMatrix *v;		//Pálya mátrixa
-	int Tarsoly;		//Tarsolyban lévő tetris
-	int KoviT[2];		//Kovetkező Tetrisek
-	char *nev;			//Jatekos neve
-	Ranglista rlista[500];			//Ranglista
+	int sor, oszlop;		//Pálya mérete
+	float Nsize;			//Négyzetek mérete
+	float width, height;	//Pálya szélesség, magasság
+	int *sum;				//Soronkénti összeg
+	int level;				//Jelenlegi szint
+	Ido time;				//Eltelt idő
+	int pont;				//Pontszám
+	int ElSorSzam;			//Eltüntetett sorok száma
+	PalyaMatrix *v;			//Pálya mátrixa
+	int Tarsoly;			//Tarsolyban lévő tetris
+	int KoviT[2];			//Kovetkező Tetrisek
+	char *nev;				//Jatekos neve
+	Ranglista rlista[500];	//Ranglista
 } Palya;
 
 //Memoria terulet lefoglalasa a pályának
@@ -61,22 +61,6 @@ int AltetrisKord(Palya const *vp, Hand const *hp);
 
 //Következő tetrisre állítás
 void KovTetris(Palya *vp, Hand *hp, bool *vege);
-
-//Ranglista feltöltése fájlból
-void Ranglistabeolvas(Palya *vp);
-
-//Ranglistához hozzáadás
-void Ranglistahozaad(Palya *vp);
-
-//Ranglista rendezése
-void RanglistaRendez(Palya *vp);
-
-//Ranglista mentése
-void Ranglistament(Palya *vp);
-
-//Játékos nevének módosítása
-void Nevhezir(Palya *vp, int c);
-void NevbolTorol(Palya *vp);
 
 
 #endif

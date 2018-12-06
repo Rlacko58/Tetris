@@ -16,7 +16,7 @@ void initGL() {
 
 //void glutTimerFunc(unsigned int msecs, void(*func)(int value), value);
 // Játék belső időzítője
-void Idozito(int idokoz, int Frissites_ms) {
+void Idozito(int idokoz) {
 	glutPostRedisplay(); //Jelenlegi ablak újrarajzolandónak jelölése
 	glutTimerFunc(idokoz, Idozito, idokoz); // Időzítő indítása megint, (mennyi idő múlva, melyik függvény, mit adjon át)
 }
@@ -151,13 +151,11 @@ static void RajzolTetris(Palya *vp, Hand *hp, int x, bool mode) {
 //Adott bool tömbben lévő tetris kirajzolása
 static void RajzolVTetris(Palya static *vp, bool* t, int size, float x, float y, int szin) {
 	GLfloat nsize = 0.1;
-	for (int i = 0; i < size; i++) {
-		for (int j = 0; j < size; j++) {
+	for (int i = 0; i < size; i++) 
+		for (int j = 0; j < size; j++) 
 			if (t[IND(i, j, size)])
 				RajzolNegyzet(&nsize, x + j * 0.1, y - (1 + i) * 0.1,
 					SzinKonverter(szin), 0);
-		}
-	}
 }
 
 //Idő kirajzolása
@@ -289,7 +287,7 @@ void JatekRajzol(Palya *vp, Hand *hp) {
 }
 
 
-//Játék vége kiiratás
+//Játék vége kirajzolás
 void GameOverRajzol(Palya *vp, Hand *hp) {
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	Szovegrajzol("Jatek vege", -0.3, 0.1, 0.1);

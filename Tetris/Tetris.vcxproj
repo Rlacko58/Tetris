@@ -152,12 +152,14 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="map.c" />
     <ClCompile Include="megjelenites.c" />
+    <ClCompile Include="ranglista.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debugmalloc.h" />
     <ClInclude Include="hand.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="megjelenites.h" />
+    <ClInclude Include="ranglista.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
